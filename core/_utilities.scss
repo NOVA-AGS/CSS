@@ -1,0 +1,382 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — УТИЛИТЫ
+// Исправлено: justify/items/content maps, логические свойства,
+// bg-gray шкала, aspect-ratio, gap-x/gap-y, container queries
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+
+  // ── 1. Отображение ─────────────────────────────────────────
+  & .block        { display: block; }
+  & .inline-block { display: inline-block; }
+  & .inline       { display: inline; }
+  & .flex         { display: flex; }
+  & .inline-flex  { display: inline-flex; }
+  & .grid         { display: grid; }
+  & .contents     { display: contents; }
+  & .hidden       { display: none !important; }
+  & .invisible    { visibility: hidden; }
+  & .visible      { visibility: visible; }
+
+  // ── 2. Flexbox ─────────────────────────────────────────────
+  & .flex-row            { flex-direction: row; }
+  & .flex-row-reverse    { flex-direction: row-reverse; }
+  & .flex-col            { flex-direction: column; }
+  & .flex-col-reverse    { flex-direction: column-reverse; }
+  & .flex-wrap           { flex-wrap: wrap; }
+  & .flex-nowrap         { flex-wrap: nowrap; }
+  & .flex-wrap-reverse   { flex-wrap: wrap-reverse; }
+
+  // ✅ ИСПРАВЛЕНО: map вместо сломанного @each с flex-prefix
+  $justify-map: (
+    'start':   flex-start,
+    'center':  center,
+    'end':     flex-end,
+    'between': space-between,
+    'around':  space-around,
+    'evenly':  space-evenly,
+    'stretch': stretch,
+  );
+  @each $key, $val in $justify-map {
+    & .justify-#{$key} { justify-content: $val; }
+  }
+
+  $items-map: (
+    'start':    flex-start,
+    'center':   center,
+    'end':      flex-end,
+    'stretch':  stretch,
+    'baseline': baseline,
+  );
+  @each $key, $val in $items-map {
+    & .items-#{$key} { align-items: $val; }
+  }
+
+  $content-map: (
+    'start':   flex-start,
+    'center':  center,
+    'end':     flex-end,
+    'between': space-between,
+    'around':  space-around,
+    'evenly':  space-evenly,
+    'stretch': stretch,
+  );
+  @each $key, $val in $content-map {
+    & .content-#{$key} { align-content: $val; }
+  }
+
+  // Self-align:
+  $self-map: (
+    'auto':     auto,
+    'start':    flex-start,
+    'center':   center,
+    'end':      flex-end,
+    'stretch':  stretch,
+    'baseline': baseline,
+  );
+  @each $key, $val in $self-map {
+    & .self-#{$key} { align-self: $val; }
+  }
+
+  // ── 3. Отступы (логические свойства + RTL) ─────────────────
+  // Карта: класс → (логическое-свойство-1, логическое-свойство-2?)
+  $spacing-props: (
+    'p':  (padding-block,         padding-inline),
+    'px': (padding-inline-start,  padding-inline-end),
+    'py': (padding-block-start,   padding-block-end),
+    'pt': (padding-block-start,),
+    'pb': (padding-block-end,),
+    'ps': (padding-inline-start,),   // start = left в LTR
+    'pe': (padding-inline-end,),     // end = right в LTR
+    'm':  (margin-block,          margin-inline),
+    'mx': (margin-inline-start,   margin-inline-end),
+    'my': (margin-block-start,    margin-block-end),
+    'mt': (margin-block-start,),
+    'mb': (margin-block-end,),
+    'ms': (margin-inline-start,),
+    'me': (margin-inline-end,),
+  );
+
+  $spacing-sizes: ('0', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl');
+
+  @each $prefix, $props in $spacing-props {
+    @each $size in $spacing-sizes {
+      & .#{$prefix}-#{$size} {
+        @each $prop in $props {
+          #{$prop}: var(--nova-space-#{$size});
+        }
+      }
+    }
+    // auto только для margin:
+    @if string.slice($prefix, 1, 1) == 'm' {
+      & .#{$prefix}-auto {
+        @each $prop in $props {
+          #{$prop}: auto;
+        }
+      }
+    }
+  }
+
+  // ── 4. Gap ─────────────────────────────────────────────────
+  @each $size in ('0', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl') {
+    & .gap-#{$size}   { gap:        var(--nova-space-#{$size}); }
+    & .gap-x-#{$size} { column-gap: var(--nova-space-#{$size}); }
+    & .gap-y-#{$size} { row-gap:    var(--nova-space-#{$size}); }
+  }
+
+  // ── 5. Flex grow/shrink/basis ──────────────────────────────
+  & .flex-1    { flex: 1 1 0%; }
+  & .flex-auto { flex: 1 1 auto; }
+  & .flex-none { flex: none; }
+  & .flex-initial { flex: 0 1 auto; }
+  & .grow      { flex-grow: 1; }
+  & .grow-0    { flex-grow: 0; }
+  & .shrink    { flex-shrink: 1; }
+  & .shrink-0  { flex-shrink: 0; }
+
+  // ── 6. Grid ────────────────────────────────────────────────
+  @for $i from 1 through 12 {
+    & .grid-cols-#{$i} {
+      grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+    }
+  }
+  @for $i from 1 through 6 {
+    & .grid-rows-#{$i} {
+      grid-template-rows: repeat(#{$i}, minmax(0, 1fr));
+    }
+  }
+
+  // Col/row span:
+  @for $i from 1 through 12 {
+    & .col-span-#{$i}  { grid-column: span #{$i} / span #{$i}; }
+  }
+  @for $i from 1 through 6 {
+    & .row-span-#{$i}  { grid-row: span #{$i} / span #{$i}; }
+  }
+  & .col-span-full { grid-column: 1 / -1; }
+
+  // ── 7. Размеры (логические) ────────────────────────────────
+  // Inline-size (ширина):
+  & .w-full         { inline-size: 100%; }
+  & .w-half         { inline-size: 50%; }
+  & .w-third        { inline-size: 33.333%; }
+  & .w-two-thirds   { inline-size: 66.666%; }
+  & .w-quarter      { inline-size: 25%; }
+  & .w-three-quarters { inline-size: 75%; }
+  & .w-auto         { inline-size: auto; }
+  & .w-screen       { inline-size: 100vw; }
+  & .w-svw          { inline-size: 100svw; } // small viewport
+  & .w-min          { inline-size: min-content; }
+  & .w-max          { inline-size: max-content; }
+  & .w-fit          { inline-size: fit-content; }
+
+  // Block-size (высота):
+  & .h-full   { block-size: 100%; }
+  & .h-half   { block-size: 50%; }
+  & .h-auto   { block-size: auto; }
+  & .h-screen { block-size: 100vh; }
+  & .h-svh    { block-size: 100svh; } // без адресной строки
+  & .h-dvh    { block-size: 100dvh; } // динамическая
+  & .h-min    { block-size: min-content; }
+  & .h-max    { block-size: max-content; }
+
+  // Min/Max:
+  & .min-w-0      { min-inline-size: 0; }
+  & .min-w-full   { min-inline-size: 100%; }
+  & .max-w-full   { max-inline-size: 100%; }
+  & .max-w-screen { max-inline-size: 100vw; }
+  & .max-w-sm     { max-inline-size: 640px; }
+  & .max-w-md     { max-inline-size: 768px; }
+  & .max-w-lg     { max-inline-size: 1024px; }
+  & .max-w-xl     { max-inline-size: 1280px; }
+  & .max-w-2xl    { max-inline-size: 1536px; }
+  & .max-w-prose  { max-inline-size: 65ch; } // для читаемости текста
+  & .max-w-none   { max-inline-size: none; }
+
+  & .min-h-0      { min-block-size: 0; }
+  & .min-h-full   { min-block-size: 100%; }
+  & .min-h-screen { min-block-size: 100vh; }
+  & .min-h-svh    { min-block-size: 100svh; }
+
+  // ── 8. Aspect Ratio ────────────────────────────────────────
+  & .aspect-square   { aspect-ratio: 1 / 1; }
+  & .aspect-video    { aspect-ratio: 16 / 9; }
+  & .aspect-portrait { aspect-ratio: 3 / 4; }
+  & .aspect-wide     { aspect-ratio: 21 / 9; }
+  & .aspect-photo    { aspect-ratio: 4 / 3; }
+  & .aspect-auto     { aspect-ratio: auto; }
+
+  // ── 9. Скругления (логические) ─────────────────────────────
+  $radius-sizes: ('none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full');
+
+  @each $size in $radius-sizes {
+    & .rounded-#{$size} {
+      border-radius: var(--nova-radius-#{$size});
+    }
+  }
+  & .rounded { border-radius: var(--nova-radius-md); }
+
+  // Стороны:
+  & .rounded-t {
+    border-start-start-radius: var(--nova-radius-md);
+    border-start-end-radius:   var(--nova-radius-md);
+  }
+  & .rounded-b {
+    border-end-start-radius:   var(--nova-radius-md);
+    border-end-end-radius:     var(--nova-radius-md);
+  }
+  & .rounded-s {
+    border-start-start-radius: var(--nova-radius-md);
+    border-end-start-radius:   var(--nova-radius-md);
+  }
+  & .rounded-e {
+    border-start-end-radius:   var(--nova-radius-md);
+    border-end-end-radius:     var(--nova-radius-md);
+  }
+
+  // Углы (логические):
+  & .rounded-ss { border-start-start-radius: var(--nova-radius-md); }
+  & .rounded-se { border-start-end-radius:   var(--nova-radius-md); }
+  & .rounded-es { border-end-start-radius:   var(--nova-radius-md); }
+  & .rounded-ee { border-end-end-radius:     var(--nova-radius-md); }
+
+  // ── 10. Границы ────────────────────────────────────────────
+  & .border   { border: 1px solid var(--nova-border-color); }
+  & .border-0 { border: none; }
+  & .border-2 { border: 2px solid var(--nova-border-color); }
+  & .border-4 { border: 4px solid var(--nova-border-color); }
+
+  $border-sides: (
+    'bs': border-block-start,
+    'be': border-block-end,
+    'bi': border-inline,
+    'is': border-inline-start,
+    'ie': border-inline-end,
+  );
+  @each $key, $prop in $border-sides {
+    & .border-#{$key} { #{$prop}: 1px solid var(--nova-border-color); }
+  }
+
+  // Цвета границ:
+  $border-colors: 'primary', 'secondary', 'success',
+                  'danger', 'warning', 'info';
+  @each $c in $border-colors {
+    & .border-#{$c} { border-color: var(--nova-#{$c}); }
+  }
+
+  // ── 11. Фоны ───────────────────────────────────────────────
+  & .bg-white       { background-color: white; }
+  & .bg-transparent { background-color: transparent; }
+
+  $bg-colors: 'primary', 'secondary', 'success',
+              'danger', 'warning', 'info';
+  @each $c in $bg-colors {
+    & .bg-#{$c}       { background-color: var(--nova-#{$c}); }
+    & .bg-#{$c}-light { background-color: var(--nova-#{$c}-50); }
+  }
+
+  // ✅ ИСПРАВЛЕНО: правильная шкала серого
+  $gray-shades: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+  @each $shade in $gray-shades {
+    & .bg-gray-#{$shade} {
+      background-color: var(--nova-gray-#{$shade});
+    }
+  }
+
+  // Семантические фоны:
+  & .bg-base      { background-color: var(--nova-bg-primary); }
+  & .bg-muted     { background-color: var(--nova-bg-secondary); }
+  & .bg-subtle    { background-color: var(--nova-bg-tertiary); }
+
+  // ── 12. Прозрачность ───────────────────────────────────────
+  @for $i from 0 through 10 {
+    & .opacity-#{$i * 10} { opacity: math.div($i, 10); }
+  }
+
+  // ── 13. Тени ───────────────────────────────────────────────
+  $shadow-sizes: 'none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl';
+  @each $s in $shadow-sizes {
+    & .shadow-#{$s} { box-shadow: var(--nova-shadow-#{$s}); }
+  }
+  & .shadow { box-shadow: var(--nova-shadow-md); }
+
+  $glow-sizes: 'xs', 'sm', 'md', 'lg';
+  @each $s in $glow-sizes {
+    & .shadow-glow-#{$s} { box-shadow: var(--nova-glow-#{$s}); }
+  }
+  & .shadow-none { box-shadow: none; }
+
+  // ── 14. Позиционирование ───────────────────────────────────
+  @each $p in 'static', 'fixed', 'absolute', 'relative', 'sticky' {
+    & .#{$p} { position: #{$p}; }
+  }
+
+  // Логические позиции:
+  & .inset-0          { inset: 0; }
+  & .inset-x-0        { inset-inline: 0; }
+  & .inset-y-0        { inset-block: 0; }
+  & .top-0            { inset-block-start: 0; }
+  & .bottom-0         { inset-block-end: 0; }
+  & .start-0          { inset-inline-start: 0; }
+  & .end-0            { inset-inline-end: 0; }
+  // Обратная совместимость:
+  & .left-0           { inset-inline-start: 0; }
+  & .right-0          { inset-inline-end: 0; }
+
+  // ── 15. Z-Index ────────────────────────────────────────────
+  @each $val in 0, 10, 20, 30, 40, 50 {
+    & .z-#{$val} { z-index: $val; }
+  }
+  & .z-auto    { z-index: auto; }
+  & .z-modal   { z-index: var(--nova-zindex-modal); }
+  & .z-tooltip { z-index: var(--nova-zindex-tooltip); }
+
+  // ── 16. Переполнение ───────────────────────────────────────
+  @each $o in 'auto', 'hidden', 'visible', 'scroll', 'clip' {
+    & .overflow-#{$o} { overflow: #{$o}; }
+  }
+  & .overflow-x-auto   { overflow-x: auto; }
+  & .overflow-y-auto   { overflow-y: auto; }
+  & .overflow-x-hidden { overflow-x: hidden; }
+  & .overflow-y-hidden { overflow-y: hidden; }
+
+  // ── 17. Курсор ─────────────────────────────────────────────
+  @each $c in 'auto', 'default', 'pointer', 'wait',
+              'text', 'move', 'not-allowed', 'grab', 'grabbing' {
+    & .cursor-#{$c} { cursor: #{$c}; }
+  }
+
+  // ── 18. Pointer events ─────────────────────────────────────
+  & .pointer-events-none { pointer-events: none; }
+  & .pointer-events-auto { pointer-events: auto; }
+
+  // ── 19. User select ────────────────────────────────────────
+  & .select-none { user-select: none; }
+  & .select-text { user-select: text; }
+  & .select-all  { user-select: all; }
+
+  // ── 20. Адаптивное скрытие/показ ──────────────────────────
+  @include nova-down('sm') { & .hidden-sm { display: none !important; } }
+  @include nova-down('md') { & .hidden-md { display: none !important; } }
+  @include nova-down('lg') { & .hidden-lg { display: none !important; } }
+  @include nova-up('sm')   { & .show-sm   { display: block !important; } }
+  @include nova-up('md')   { & .show-md   { display: block !important; } }
+  @include nova-up('lg')   { & .show-lg   { display: block !important; } }
+
+  // Только для определённого размера:
+  @include nova-down('sm') { & .visible-sm-only { display: none !important; } }
+
+  // ── 21. Content Visibility (производительность) ────────────
+  & .cv-auto {
+    content-visibility:     auto;
+    contain-intrinsic-size: 0 500px;
+  }
+
+  // ── 22. Container Query утилиты ────────────────────────────
+  & .container-query {
+    container-type: inline-size;
+  }
+  & .container-query-size {
+    container-type: size;
+  }
+}

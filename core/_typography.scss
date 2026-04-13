@@ -1,0 +1,336 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ТИПОГРАФИКА
+// Исправлено: логические свойства, переменные вместо хардкода,
+// новое: text-wrap balance/pretty, font-variant, капитализация
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+
+  // ── 1. Выравнивание текста ─────────────────────────────────
+  & .text-start   { text-align: start; }   // RTL-safe
+  & .text-end     { text-align: end; }     // RTL-safe
+  & .text-left    { text-align: left; }    // явное (обратная совместимость)
+  & .text-center  { text-align: center; }
+  & .text-right   { text-align: right; }
+  & .text-justify { text-align: justify; }
+
+  // ── 2. Регистр ─────────────────────────────────────────────
+  & .text-lowercase  { text-transform: lowercase; }
+  & .text-uppercase  { text-transform: uppercase; }
+  & .text-capitalize { text-transform: capitalize; }
+  & .text-normal-case{ text-transform: none; }
+
+  // ── 3. Насыщенность шрифта ─────────────────────────────────
+  $font-weights: (
+    'light':     var(--nova-font-weight-light),
+    'normal':    var(--nova-font-weight-normal),
+    'medium':    var(--nova-font-weight-medium),
+    'semibold':  var(--nova-font-weight-semibold),
+    'bold':      var(--nova-font-weight-bold),
+    'extrabold': var(--nova-font-weight-extrabold),
+  );
+
+  @each $name, $value in $font-weights {
+    & .font-#{$name} { font-weight: $value; }
+  }
+
+  // ── 4. Размеры шрифта ──────────────────────────────────────
+  $font-sizes: (
+    'xs':   var(--nova-font-size-xs),
+    'sm':   var(--nova-font-size-sm),
+    'base': var(--nova-font-size-base),
+    'lg':   var(--nova-font-size-lg),
+    'xl':   var(--nova-font-size-xl),
+    '2xl':  var(--nova-font-size-2xl),
+    '3xl':  var(--nova-font-size-3xl),
+    '4xl':  var(--nova-font-size-4xl),
+    '5xl':  var(--nova-font-size-5xl),
+  );
+
+  @each $name, $size in $font-sizes {
+    & .text-#{$name} { font-size: $size; }
+  }
+
+  // ── 5. Межстрочный интервал ────────────────────────────────
+  $line-heights: (
+    'none':    1,
+    'tight':   var(--nova-line-height-tight),
+    'snug':    var(--nova-line-height-snug),
+    'normal':  var(--nova-line-height-normal),
+    'relaxed': var(--nova-line-height-relaxed),
+    'loose':   var(--nova-line-height-loose),
+  );
+
+  @each $name, $height in $line-heights {
+    & .leading-#{$name} { line-height: $height; }
+  }
+
+  // ── 6. Межбуквенный интервал ───────────────────────────────
+  & .tracking-tighter { letter-spacing: -0.05em; }
+  & .tracking-tight   { letter-spacing: -0.025em; }
+  & .tracking-normal  { letter-spacing: 0; }
+  & .tracking-wide    { letter-spacing: 0.025em; }
+  & .tracking-wider   { letter-spacing: 0.05em; }
+  & .tracking-widest  { letter-spacing: 0.1em; }
+
+  // ── 7. Декорирование текста ────────────────────────────────
+  & .underline       { text-decoration: underline; }
+  & .overline        { text-decoration: overline; }
+  & .line-through    { text-decoration: line-through; }
+  & .no-underline    { text-decoration: none; }
+  & .italic          { font-style: italic; }
+  & .not-italic      { font-style: normal; }
+
+  // Стиль подчёркивания (новое):
+  & .underline-solid  { text-decoration-style: solid; }
+  & .underline-dashed { text-decoration-style: dashed; }
+  & .underline-dotted { text-decoration-style: dotted; }
+  & .underline-wavy   { text-decoration-style: wavy; }
+
+  // Отступ подчёркивания от текста (новое):
+  & .underline-offset-1 { text-underline-offset: 1px; }
+  & .underline-offset-2 { text-underline-offset: 2px; }
+  & .underline-offset-4 { text-underline-offset: 4px; }
+  & .underline-offset-8 { text-underline-offset: 8px; }
+
+  // ── 8. Вертикальное выравнивание ──────────────────────────
+  & .align-baseline    { vertical-align: baseline; }
+  & .align-top         { vertical-align: top; }
+  & .align-middle      { vertical-align: middle; }
+  & .align-bottom      { vertical-align: bottom; }
+  & .align-text-top    { vertical-align: text-top; }
+  & .align-text-bottom { vertical-align: text-bottom; }
+  & .align-sub         { vertical-align: sub; }
+  & .align-super       { vertical-align: super; }
+
+  // ── 9. Переносы и обрезка ─────────────────────────────────
+  & .break-normal  { overflow-wrap: normal; word-break: normal; }
+  & .break-words   { overflow-wrap: break-word; }
+  & .break-all     { word-break: break-all; }
+  & .break-keep    { word-break: keep-all; } // для CJK языков
+
+  & .truncate {
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    white-space:   nowrap;
+  }
+
+  // Line clamp (новое: до 6 строк):
+  @for $i from 1 through 6 {
+    & .line-clamp-#{$i} {
+      display:            -webkit-box;
+      -webkit-line-clamp: $i;
+      -webkit-box-orient: vertical;
+      overflow:           hidden;
+    }
+  }
+
+  & .line-clamp-none {
+    -webkit-line-clamp: unset;
+    overflow:           visible;
+  }
+
+  // ── 10. Пробельные символы ────────────────────────────────
+  & .whitespace-normal    { white-space: normal; }
+  & .whitespace-nowrap    { white-space: nowrap; }
+  & .whitespace-pre       { white-space: pre; }
+  & .whitespace-pre-wrap  { white-space: pre-wrap; }
+  & .whitespace-pre-line  { white-space: pre-line; }
+  & .whitespace-break-spaces { white-space: break-spaces; }
+
+  // ── 11. Text-wrap (современное управление переносами) ─────
+  & .text-wrap         { text-wrap: wrap; }
+  & .text-nowrap       { text-wrap: nowrap; }
+  & .text-balance      { text-wrap: balance; }  // заголовки
+  & .text-pretty       { text-wrap: pretty; }   // параграфы (нет orphans)
+
+  // ── 12. Цвета текста ──────────────────────────────────────
+  // Семантические:
+  @each $color in 'primary', 'secondary', 'success',
+                  'danger', 'warning', 'info' {
+    & .text-#{$color} {
+      color: var(--nova-#{$color});
+    }
+    & .text-#{$color}-light {
+      color: var(--nova-#{$color}-light);
+    }
+    & .text-#{$color}-dark {
+      color: var(--nova-#{$color}-dark);
+    }
+  }
+
+  // Тематические (меняются с темой):
+  & .text-base      { color: var(--nova-text-primary); }
+  & .text-muted     { color: var(--nova-text-secondary); }
+  & .text-subtle    { color: var(--nova-text-tertiary); }
+  & .text-white     { color: #ffffff; }
+  & .text-black     { color: #000000; }
+  & .text-inherit   { color: inherit; }
+  & .text-current   { color: currentColor; }
+
+  // Серые оттенки:
+  $gray-shades: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+  @each $shade in $gray-shades {
+    & .text-gray-#{$shade} { color: var(--nova-gray-#{$shade}); }
+  }
+
+  // ── 13. Font variant (типографические возможности) ────────
+  & .font-mono      { font-family: var(--nova-font-family-mono); }
+  & .font-sans      { font-family: var(--nova-font-family); }
+  & .font-numeric   { font-variant-numeric: tabular-nums; }
+  & .font-ordinal   { font-variant-numeric: ordinal; }
+  & .font-slashed-zero { font-variant-numeric: slashed-zero; }
+  & .font-small-caps  { font-variant-caps: small-caps; }
+
+  // ── 14. Готовые типографические компоненты ────────────────
+
+  // Дисплейные заголовки (крупнее h1):
+  & .display-1 {
+    font-size:   clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: var(--nova-font-weight-extrabold);
+    line-height: var(--nova-line-height-tight);
+    text-wrap:   balance;
+    letter-spacing: -0.02em;
+  }
+
+  & .display-2 {
+    font-size:   clamp(2rem, 5vw, 3.75rem);
+    font-weight: var(--nova-font-weight-bold);
+    line-height: var(--nova-line-height-tight);
+    text-wrap:   balance;
+    letter-spacing: -0.02em;
+  }
+
+  // Подзаголовок:
+  & .lead {
+    font-size:   var(--nova-font-size-xl);
+    font-weight: var(--nova-font-weight-normal);
+    line-height: var(--nova-line-height-relaxed);
+    color:       var(--nova-text-secondary);
+    text-wrap:   pretty;
+  }
+
+  // Текст для чтения (ограниченная ширина):
+  & .prose {
+    max-inline-size: 65ch;
+    line-height:     var(--nova-line-height-relaxed);
+    color:           var(--nova-text-primary);
+
+    p       { margin-block-end: var(--nova-space-md); text-wrap: pretty; }
+    h2      { margin-block: var(--nova-space-xl) var(--nova-space-md); }
+    h3      { margin-block: var(--nova-space-lg) var(--nova-space-sm); }
+    ul, ol  { margin-block-end: var(--nova-space-md); }
+    code    { font-size: 0.9em; }
+    blockquote {
+      border-inline-start: 4px solid var(--nova-primary);
+      padding-inline-start: var(--nova-space-lg);
+      color:  var(--nova-text-secondary);
+      margin: var(--nova-space-lg) 0;
+      font-style: italic;
+    }
+  }
+
+  // Метка / лейбл:
+  & .label {
+    display:        inline-block;
+    font-size:      var(--nova-font-size-xs);
+    font-weight:    var(--nova-font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color:          var(--nova-text-tertiary);
+  }
+
+  // Код / монострочный:
+  & .code-inline {
+    font-family:      var(--nova-font-family-mono);
+    font-size:        0.875em;
+    color:            var(--nova-danger);
+    background-color: var(--nova-bg-tertiary);
+    padding-block:    0.15em;
+    padding-inline:   0.4em;
+    border-radius:    var(--nova-radius-sm);
+  }
+
+  // Клавиша:
+  & .kbd {
+    display:          inline-block;
+    font-family:      var(--nova-font-family-mono);
+    font-size:        var(--nova-font-size-sm);
+    font-weight:      var(--nova-font-weight-medium);
+    padding-block:    0.1em;
+    padding-inline:   0.5em;
+    background:       var(--nova-bg-tertiary);
+    border:           1px solid var(--nova-border-color);
+    border-block-end-width: 3px;
+    border-radius:    var(--nova-radius-sm);
+    color:            var(--nova-text-primary);
+    white-space:      nowrap;
+  }
+
+  // Статистика/цифры:
+  & .stat-number {
+    font-size:      var(--nova-font-size-4xl);
+    font-weight:    var(--nova-font-weight-extrabold);
+    line-height:    1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    color:          var(--nova-primary);
+  }
+
+  // Цитата:
+  & .blockquote {
+    border-inline-start: 4px solid var(--nova-primary);
+    padding-inline-start: var(--nova-space-lg);
+    margin-inline:       0;
+    margin-block:        var(--nova-space-xl);
+    font-size:           var(--nova-font-size-lg);
+    font-style:          italic;
+    color:               var(--nova-text-secondary);
+    line-height:         var(--nova-line-height-relaxed);
+
+    cite {
+      display:     block;
+      margin-block-start: var(--nova-space-sm);
+      font-size:   var(--nova-font-size-sm);
+      font-style:  normal;
+      font-weight: var(--nova-font-weight-semibold);
+      color:       var(--nova-primary);
+
+      &::before { content: '— '; }
+    }
+  }
+
+  // ── 15. Адаптивные размеры текста (fluid) ─────────────────
+  // clamp(min, preferred, max) — плавное масштабирование
+  & .text-fluid-sm {
+    font-size: clamp(
+      var(--nova-font-size-sm),
+      2vw,
+      var(--nova-font-size-base)
+    );
+  }
+
+  & .text-fluid-base {
+    font-size: clamp(
+      var(--nova-font-size-base),
+      2.5vw,
+      var(--nova-font-size-lg)
+    );
+  }
+
+  & .text-fluid-lg {
+    font-size: clamp(
+      var(--nova-font-size-lg),
+      3vw,
+      var(--nova-font-size-2xl)
+    );
+  }
+
+  & .text-fluid-xl {
+    font-size: clamp(
+      var(--nova-font-size-xl),
+      4vw,
+      var(--nova-font-size-4xl)
+    );
+  }
+}
