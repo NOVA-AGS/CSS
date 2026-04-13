@@ -10,10 +10,14 @@
       "import": "./nova.js"
     }
   },
-  "files": ["nova.js", "nova.d.ts", "README.md"],
+  "files": [
+    "nova.js",
+    "nova.d.ts",
+    "README.md"
+  ],
   "license": "MIT",
   "devDependencies": {
-    "sass": "^1.69.0"
+    "sass": "^1.99.0"
   },
   "scripts": {
     "build:css": "sass app.scss dist/css/nova.css --style compressed",
