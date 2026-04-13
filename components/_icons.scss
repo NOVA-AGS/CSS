@@ -72,8 +72,8 @@ $nova-icon-strokes: (
   .nova-icon {
     @include nova-icon-base;
     // Дефолтный размер md:
-    inline-size: map-get($nova-icon-sizes, 'md');
-    block-size:  map-get($nova-icon-sizes, 'md');
+    inline-size: map.get($nova-icon-sizes, 'md');
+    block-size:  map.get($nova-icon-sizes, 'md');
 
     // ── Размеры ────────────────────────────────────────────
     @each $name, $size in $nova-icon-sizes {
@@ -231,17 +231,17 @@ $nova-icon-strokes: (
 
     // ── Адаптивный размер ──────────────────────────────────
     &-responsive {
-      inline-size: map-get($nova-icon-sizes, 'sm');
-      block-size:  map-get($nova-icon-sizes, 'sm');
+      inline-size: map.get($nova-icon-sizes, 'sm');
+      block-size:  map.get($nova-icon-sizes, 'sm');
 
       @media (min-width: 768px) {
-        inline-size: map-get($nova-icon-sizes, 'md');
-        block-size:  map-get($nova-icon-sizes, 'md');
+        inline-size: map.get($nova-icon-sizes, 'md');
+        block-size:  map.get($nova-icon-sizes, 'md');
       }
 
       @media (min-width: 1024px) {
-        inline-size: map-get($nova-icon-sizes, 'lg');
-        block-size:  map-get($nova-icon-sizes, 'lg');
+        inline-size: map.get($nova-icon-sizes, 'lg');
+        block-size:  map.get($nova-icon-sizes, 'lg');
       }
     }
   }

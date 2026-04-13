@@ -1,43 +1,36 @@
-```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+*.log
+*.tmp
+*.swp
+
 # Dependencies
+.venv/
+venv/
 node_modules/
 
 # Environment
 .env
 .env.local
-.env.*
-
-# Logs and temp files
-*.log
-*.tmp
+*.env.*
 
 # Editors
 .vscode/
 .idea/
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.python-version
-
-# Build outputs
-dist/
-build/
-*.egg-info/
-.coverage
+# Coverage reports
+coverage/
 htmlcov/
-.coverage.*
-.nyc_output
-coverage-final.json
+.coverage
 
 # OS generated files
 .DS_Store
 Thumbs.db
-```
+
+# Original rules preserved
+*.log

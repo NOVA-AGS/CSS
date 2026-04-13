@@ -122,12 +122,12 @@
     @each $color, $props in $alert-colors {
       // Мягкий вариант (по умолчанию):
       &-#{$color} {
-        background-color: map-get($props, bg);
-        border-color:     map-get($props, border);
-        color:            map-get($props, color);
+        background-color: map.get($props, bg);
+        border-color:     map.get($props, border);
+        color:            map.get($props, color);
 
-        .alert-icon { color: map-get($props, icon); }
-        .alert-close { color: map-get($props, icon); }
+        .alert-icon { color: map.get($props, icon); }
+        .alert-close { color: map.get($props, icon); }
       }
 
       // Сплошной вариант:
