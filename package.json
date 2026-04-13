@@ -1,0 +1,25 @@
+# 1. package.json
+{
+  "name": "nova-ui",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "./nova.js",
+  "types": "./nova.d.ts",
+  "exports": {
+    ".": {
+      "types": "./nova.d.ts",
+      "import": "./nova.js"
+    }
+  },
+  "files": ["nova.js", "nova.d.ts", "README.md"],
+  "license": "MIT"
+}
+
+# 2. README.md — минимальный контент:
+# - Установка (npm / <script>)
+# - Быстрый старт (3 примера)
+# - API Reference (ссылка на сгенерированную docs/)
+# - Лицензия
+
+# 3. (Опционально) Сгенерировать HTML-документацию:
+npx jsdoc -c jsdoc.json nova.js

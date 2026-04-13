@@ -1,0 +1,203 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — МИКСИНЫ
+// Исправлено: медиа через значения а не var(),
+// добавлены логические свойства, container queries
+// ═══════════════════════════════════════════════════════════════
+
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+
+// ── Брейкпоинты (значения должны быть литералами для @media) ──
+$nova-breakpoints: (
+  'sm':  640px,
+  'md':  768px,
+  'lg':  1024px,
+  'xl':  1280px,
+  '2xl': 1536px,
+) !default;
+
+// ── 1. Медиа-запросы ──────────────────────────────────────────
+
+// Min-width (mobile-first):
+@mixin nova-up($bp) {
+  $value: map.get($nova-breakpoints, $bp);
+  @if $value == null {
+    @error "Nova: неизвестный брейкпоинт '#{$bp}'";
+  }
+  @media (min-width: #{$value}) { @content; }
+}
+
+// Max-width:
+@mixin nova-down($bp) {
+  $value: map.get($nova-breakpoints, $bp);
+  @if $value == null {
+    @error "Nova: неизвестный брейкпоинт '#{$bp}'";
+  }
+  // Вычитаем 0.02px чтобы не пересекаться с min-width:
+  $max: ($value - 0.02px);
+  @media (max-width: #{$max}) { @content; }
+}
+
+// Between двумя брейкпоинтами:
+@mixin nova-between($lower, $upper) {
+  $min: map.get($nova-breakpoints, $lower);
+  $max: map.get($nova-breakpoints, $upper) - 0.02px;
+  @media (min-width: #{$min}) and (max-width: #{$max}) { @content; }
+}
+
+// ── 2. Container Queries ──────────────────────────────────────
+@mixin nova-container($name: null) {
+  @if $name {
+    container-type: inline-size;
+    container-name: #{$name};
+  } @else {
+    container-type: inline-size;
+  }
+}
+
+@mixin nova-container-up($size, $name: null) {
+  @if $name {
+    @container #{$name} (min-width: #{$size}) { @content; }
+  } @else {
+    @container (min-width: #{$size}) { @content; }
+  }
+}
+
+@mixin nova-container-down($size, $name: null) {
+  @if $name {
+    @container #{$name} (max-width: #{$size}) { @content; }
+  } @else {
+    @container (max-width: #{$size}) { @content; }
+  }
+}
+
+// ── 3. Градиент ───────────────────────────────────────────────
+@mixin nova-gradient($color, $angle: 135deg) {
+  background: linear-gradient(
+    #{$angle},
+    var(--nova-#{$color})      0%,
+    var(--nova-#{$color}-dark) 100%
+  );
+  color: white;
+}
+
+// ── 4. Тень ───────────────────────────────────────────────────
+@mixin nova-shadow($size: 'md') {
+  box-shadow: var(--nova-shadow-#{$size});
+}
+
+// ── 5. Изоляция в .nova ───────────────────────────────────────
+@mixin nova-scope {
+  .nova { @content; }
+}
+
+// ── 6. Отступы (логические свойства) ─────────────────────────
+// Карта: короткий ключ → логические CSS-свойства
+$_spacing-map: (
+  'p':  ('padding-block',  'padding-inline'),
+  'px': ('padding-inline-start', 'padding-inline-end'),
+  'py': ('padding-block-start',  'padding-block-end'),
+  'pt': ('padding-block-start',),
+  'pb': ('padding-block-end',),
+  'ps': ('padding-inline-start',),  // start (ltr=left, rtl=right)
+  'pe': ('padding-inline-end',),    // end
+  'm':  ('margin-block',   'margin-inline'),
+  'mx': ('margin-inline-start', 'margin-inline-end'),
+  'my': ('margin-block-start',  'margin-block-end'),
+  'mt': ('margin-block-start',),
+  'mb': ('margin-block-end',),
+  'ms': ('margin-inline-start',),
+  'me': ('margin-inline-end',),
+);
+
+@mixin nova-spacing($direction, $size) {
+  $props: map.get($_spacing-map, $direction);
+  @if $props == null {
+    @error "Nova: неизвестное направление '#{$direction}'";
+  }
+  @each $prop in $props {
+    #{$prop}: var(--nova-space-#{$size});
+  }
+}
+
+// ── 7. Flexbox утилиты ────────────────────────────────────────
+@mixin nova-flex(
+  $direction: row,
+  $justify: flex-start,
+  $align: stretch,
+  $wrap: nowrap,
+  $gap: null
+) {
+  display:         flex;
+  flex-direction:  $direction;
+  justify-content: $justify;
+  align-items:     $align;
+  flex-wrap:       $wrap;
+  @if $gap { gap: var(--nova-space-#{$gap}); }
+}
+
+// ── 8. Visually Hidden ────────────────────────────────────────
+@mixin nova-visually-hidden {
+  position:    absolute;
+  width:       1px;
+  height:      1px;
+  padding:     0;
+  margin:      -1px;
+  overflow:    hidden;
+  clip:        rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border:      0;
+}
+
+// ── 9. Focus ring ─────────────────────────────────────────────
+@mixin nova-focus-ring($color: var(--nova-primary), $offset: 2px) {
+  &:focus-visible {
+    outline:        2px solid $color;
+    outline-offset: $offset;
+    border-radius:  var(--nova-radius-sm);
+  }
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+// ── 10. Truncate текст ────────────────────────────────────────
+@mixin nova-truncate {
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  white-space:   nowrap;
+}
+
+// ── 11. Line clamp ────────────────────────────────────────────
+@mixin nova-line-clamp($lines) {
+  display:            -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow:           hidden;
+}
+
+// ── 12. Transition ────────────────────────────────────────────
+@mixin nova-transition($props...) {
+  $transitions: ();
+  @each $prop in $props {
+    $transitions: append(
+      $transitions,
+      #{$prop} var(--nova-transition-base),
+      comma
+    );
+  }
+  transition: $transitions;
+}
+
+// ── 13. Content-visibility (производительность) ───────────────
+@mixin nova-content-visibility($height: auto) {
+  content-visibility:     auto;
+  contain-intrinsic-size: 0 #{$height};
+}
+
+// ── 14. Aria-hidden безопасный скрытый элемент ────────────────
+@mixin nova-hidden {
+  display:    none !important;
+  visibility: hidden;
+}

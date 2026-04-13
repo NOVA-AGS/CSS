@@ -1,0 +1,72 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ТОЧКА ВХОДА
+// Архитектура: @layer для контроля специфичности
+// ═══════════════════════════════════════════════════════════════
+
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:list';
+@use 'sass:string';
+@use 'sass:meta';
+
+// ── Объявляем слои ЗАРАНЕЕ — порядок определяет приоритет ─────
+// Утилиты всегда побеждают компоненты,
+// компоненты всегда побеждают базовые стили:
+@layer
+  nova-tokens,     // CSS-переменные и @property
+  nova-reset,      // нормализация
+  nova-base,       // типографика
+  nova-components, // UI-компоненты
+  nova-utilities,  // утилитарные классы
+  nova-themes;     // переопределения тем
+
+// ── 1. Токены и переменные ────────────────────────────────────
+@layer nova-tokens {
+  @import 'variables';
+}
+
+// ── 2. Миксины (вне @layer — они не генерируют CSS) ───────────
+@import 'mixins';
+
+// ── 3. Сброс и нормализация ───────────────────────────────────
+@layer nova-reset {
+  @import 'core/reset';
+}
+
+// ── 4. Базовая типографика ────────────────────────────────────
+@layer nova-base {
+  @import 'core/typography';
+}
+
+// ── 5. Компоненты ─────────────────────────────────────────────
+@layer nova-components {
+  @import 'components/alerts';
+  @import 'components/badges';
+  @import 'components/breadcrumbs';
+  @import 'components/buttons';
+  @import 'components/cards';
+  @import 'components/carousel';
+  @import 'components/collapse';
+  @import 'components/dropdown';
+  @import 'components/forms';
+  @import 'components/icons';     // ← был пропущен!
+  @import 'components/modals';
+  @import 'components/navbar';
+  @import 'components/pagination';
+  @import 'components/spinners';
+  @import 'components/tables';
+  @import 'components/tabs';
+  @import 'components/toasts';
+  @import 'components/tooltip';
+}
+
+// ── 6. Утилиты (наивысший приоритет среди стилей) ─────────────
+@layer nova-utilities {
+  @import 'core/utilities';
+}
+
+// ── 7. Темы ───────────────────────────────────────────────────
+@layer nova-themes {
+  @import 'themes/light';
+  @import 'themes/dark';
+}

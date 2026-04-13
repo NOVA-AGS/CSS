@@ -1,0 +1,78 @@
+{
+  "source": {
+    "include": ["nova.js"],
+    "includePattern": "\\.js$",
+    "excludePattern": "(node_modules/|docs/)"
+  },
+
+  "plugins": [
+    "plugins/markdown"
+  ],
+
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "readme": "README.md",
+    "template": "node_modules/docdash",
+    "encoding": "utf8",
+    "verbose": false
+  },
+
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false,
+      "useLongnameInNav": false,
+      "staticFiles": {
+        "include": ["./docs-assets"]
+      }
+    },
+    "docdash": {
+      "static": true,
+      "sort": false,
+      "sectionOrder": [
+        "Classes",
+        "Namespaces",
+        "Modules",
+        "Externals",
+        "Events",
+        "Interfaces",
+        "Mixins",
+        "Tutorials",
+        "Global"
+      ],
+      "search": true,
+      "collapse": false,
+      "wrap": false,
+      "typedefs": true,
+      "removeQuotes": "none",
+      "scripts": [],
+      "menu": {
+        "GitHub": {
+          "href": "https://github.com/your-username/nova-framework",
+          "target": "_blank",
+          "class": "menu-item",
+          "id": "github-link"
+        },
+        "npm": {
+          "href": "https://npmjs.com/package/nova-framework",
+          "target": "_blank",
+          "class": "menu-item",
+          "id": "npm-link"
+        }
+      }
+    }
+  },
+
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+
+  "markdown": {
+    "hardwrap": false,
+    "idInHeadings": true
+  }
+}
