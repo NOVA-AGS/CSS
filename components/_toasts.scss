@@ -260,16 +260,16 @@
       &-#{$name} {
         background: linear-gradient(
           135deg,
-          map-get($props, bg)  0%,
-          map-get($props, bg2) 100%
+          map.get($props, bg)  0%,
+          map.get($props, bg2) 100%
         );
-        border-color: map-get($props, border);
+        border-color: map.get($props, border);
 
-        .toast-indicator { background: map-get($props, indicator); }
-        .toast-icon      { color:      map-get($props, icon); }
-        .toast-title     { color:      map-get($props, title); }
-        .toast-progress  { background: map-get($props, progress); }
-        .toast-action    { color:      map-get($props, indicator); }
+        .toast-indicator { background: map.get($props, indicator); }
+        .toast-icon      { color:      map.get($props, icon); }
+        .toast-title     { color:      map.get($props, title); }
+        .toast-progress  { background: map.get($props, progress); }
+        .toast-action    { color:      map.get($props, indicator); }
       }
     }
 

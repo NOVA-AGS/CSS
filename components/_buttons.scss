@@ -111,7 +111,7 @@
 
     // ── Основные варианты с градиентами ──────────────────────
     @each $c in $btn-colors {
-      $shadow: map-get($btn-shadow-colors, $c);
+      $shadow: map.get($btn-shadow-colors, $c);
 
       &-#{$c} {
         background: linear-gradient(
