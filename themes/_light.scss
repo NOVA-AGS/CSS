@@ -1,0 +1,242 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — СВЕТЛАЯ ТЕМА
+// Исправлено: используем CSS-переменные из _variables.scss,
+// логические свойства, новые компоненты
+// ═══════════════════════════════════════════════════════════════
+
+[data-nova-theme="light"] {
+  color-scheme: light;
+
+  // ── Семантические переменные темы ──────────────────────
+  --nova-bg-primary:    #ffffff;
+  --nova-bg-secondary:  #f8fafc;
+  --nova-bg-tertiary:   #f1f5f9;
+  --nova-text-primary:  #0f172a;
+  --nova-text-secondary:#334155;
+  --nova-text-tertiary: #64748b;
+  --nova-border-color:  #e2e8f0;
+
+  // ── Body ───────────────────────────────────────────────
+  body {
+    background-color: var(--nova-bg-secondary);
+    color:            var(--nova-text-primary);
+  }
+
+  // ── Навигация ──────────────────────────────────────────
+  .nova .navbar {
+    background-color:     white;
+    border-block-end-color:var(--nova-gray-200);
+    box-shadow:           0 1px 3px rgba(0, 0, 0, 0.08);
+
+    &-link { color: var(--nova-gray-600); }
+    &-link:hover { color: var(--nova-primary); background-color: var(--nova-gray-50); }
+  }
+
+  // ── Карточки ───────────────────────────────────────────
+  .nova .card {
+    background-color: white;
+    border-color:     var(--nova-gray-200);
+    box-shadow:       0 1px 3px rgba(0, 0, 0, 0.06),
+                      0 1px 2px rgba(0, 0, 0, 0.04);
+
+    &:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08),
+                  0 4px 10px  rgba(0, 0, 0, 0.04);
+    }
+
+    &-header {
+      background: linear-gradient(135deg, #f8fafc 0%, white 100%);
+      border-block-end-color: var(--nova-gray-100);
+    }
+
+    &-footer {
+      background-color:        var(--nova-gray-50);
+      border-block-start-color:var(--nova-gray-100);
+    }
+  }
+
+  // ── Формы ──────────────────────────────────────────────
+  .nova .form-control {
+    background-color: white;
+    color:            var(--nova-text-primary);
+    border-color:     var(--nova-gray-300);
+
+    &:focus {
+      background-color: white;
+      border-color:     var(--nova-primary);
+      box-shadow:       0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    &:hover:not(:focus):not(:disabled) {
+      border-color: var(--nova-gray-400);
+    }
+
+    &::placeholder { color: var(--nova-gray-400); }
+    &:disabled     { background-color: var(--nova-gray-50); }
+  }
+
+  .nova select.form-control { background-color: white; }
+
+  .nova .form-switch input[type="checkbox"] {
+    background-color: var(--nova-gray-300);
+    &:checked        { background-color: var(--nova-primary); }
+  }
+
+  .nova .input-group-text {
+    background-color: var(--nova-gray-50);
+    border-color:     var(--nova-gray-300);
+    color:            var(--nova-gray-500);
+  }
+
+  // ── Кнопки ─────────────────────────────────────────────
+  .nova .btn-ghost {
+    color: var(--nova-gray-600);
+    &:hover { background-color: var(--nova-gray-100); color: var(--nova-primary); }
+  }
+
+  .nova .btn-link { color: var(--nova-primary); }
+
+  // ── Модалы ─────────────────────────────────────────────
+  .nova .modal {
+    &-dialog {
+      background-color: white;
+      border-color:     var(--nova-gray-200);
+    }
+
+    &-header {
+      background: linear-gradient(135deg, var(--nova-gray-50) 0%, white 100%);
+      border-block-end-color: var(--nova-gray-200);
+    }
+
+    &-footer {
+      background-color:        var(--nova-gray-50);
+      border-block-start-color:var(--nova-gray-100);
+    }
+
+    &-backdrop { background-color: rgba(0, 0, 0, 0.45); }
+  }
+
+  // ── Таблицы ────────────────────────────────────────────
+  .nova .table {
+    background-color: white;
+    color:            var(--nova-text-primary);
+
+    thead {
+      background: linear-gradient(135deg, var(--nova-gray-50) 0%, white 100%);
+      th { border-block-end-color: var(--nova-gray-200); color: var(--nova-gray-500); }
+    }
+
+    tbody tr {
+      border-block-end-color: var(--nova-gray-100);
+      &:hover { background-color: var(--nova-gray-50); }
+    }
+  }
+
+  .nova .table-wrap {
+    border-color: var(--nova-gray-200);
+    box-shadow:   0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  // ── Алерты ─────────────────────────────────────────────
+  .nova .alert {
+    background-color: var(--nova-gray-50);
+    border-color:     var(--nova-gray-200);
+    color:            var(--nova-text-primary);
+  }
+
+  // ── Бейджи ─────────────────────────────────────────────
+  .nova .badge-neutral {
+    background-color: var(--nova-gray-100);
+    color:            var(--nova-gray-700);
+    border-color:     var(--nova-gray-200);
+  }
+
+  // ── Тосты ──────────────────────────────────────────────
+  .nova .toast {
+    background-color: white;
+    border-color:     var(--nova-gray-200);
+    box-shadow:       0 10px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  // ── Вкладки ────────────────────────────────────────────
+  .nova .tabs-header { border-block-end-color: var(--nova-gray-200); }
+  .nova .tabs-card   { border-color: var(--nova-gray-200); }
+
+  .nova .tabs-pill .tabs-header {
+    background-color: var(--nova-gray-100);
+  }
+
+  // ── Пагинация ──────────────────────────────────────────
+  .nova .pagination-link {
+    background-color: white;
+    border-color:     var(--nova-gray-200);
+    color:            var(--nova-text-primary);
+
+    &:hover:not(.disabled):not(.active) {
+      background-color: var(--nova-gray-50);
+      border-color:     var(--nova-primary);
+    }
+
+    &.disabled { background-color: var(--nova-gray-50); }
+  }
+
+  // ── Дропдаун ───────────────────────────────────────────
+  .nova .dropdown-menu {
+    background-color: white;
+    border-color:     var(--nova-gray-200);
+    box-shadow:       0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .nova .dropdown-item {
+    color: var(--nova-text-primary);
+    &:hover { background-color: var(--nova-gray-50); color: var(--nova-primary); }
+  }
+
+  // ── Collapse ───────────────────────────────────────────
+  .nova .collapse-group {
+    background-color: white;
+    border-color:     var(--nova-gray-200);
+  }
+
+  .nova .collapse-header {
+    background: linear-gradient(135deg, var(--nova-gray-50) 0%, white 100%);
+    color:      var(--nova-text-primary);
+    &:hover    { background-color: var(--nova-gray-50); }
+  }
+
+  // ── Tooltip ────────────────────────────────────────────
+  .nova .tooltip-light {
+    background: white;
+    color:      var(--nova-text-primary);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  // ── Скроллбар ──────────────────────────────────────────
+  & ::-webkit-scrollbar-thumb {
+    background-color: var(--nova-gray-300);
+    &:hover { background-color: var(--nova-gray-400); }
+  }
+
+  // ── Иконки ─────────────────────────────────────────────
+  .nova .nova-icon-bg {
+    background-color: var(--nova-gray-100);
+    color:            var(--nova-gray-600);
+  }
+
+  // ── Sidenav ────────────────────────────────────────────
+  .nova .sidenav {
+    background-color:  white;
+    border-inline-end-color: var(--nova-gray-200);
+  }
+
+  // ── Код ────────────────────────────────────────────────
+  code {
+    background-color: var(--nova-gray-100);
+    color:            var(--nova-danger-dark);
+  }
+
+  pre {
+    background-color: var(--nova-gray-50);
+    border:           1px solid var(--nova-gray-200);
+  }
+}
