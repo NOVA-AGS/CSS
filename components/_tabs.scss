@@ -1,0 +1,428 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ВКЛАДКИ
+// Исправлено: vertical ::after на display:none,
+// логические свойства, WAI-ARIA стили,
+// новое: scrollable tabs, closable tabs, underline вариант
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  .tabs {
+    inline-size: 100%;
+    container-type: inline-size;
+    container-name: nova-tabs;
+
+    // ── Список вкладок ─────────────────────────────────────
+    &-header {
+      display:         flex;
+      list-style:      none;
+      margin:          0;
+      padding:         0;
+      border-block-end:2px solid var(--nova-border-color);
+      gap:             0;
+      position:        relative;
+
+      // Прокручиваемые вкладки:
+      &-scroll {
+        overflow-x:              auto;
+        overflow-y:              hidden;
+        scrollbar-width:         none;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap:               nowrap;
+
+        &::-webkit-scrollbar { display: none; }
+      }
+    }
+
+    &-content { position: relative; }
+
+    // ── Элемент вкладки ────────────────────────────────────
+    .tab-item {
+      display:  flex;
+      margin:   0;
+      padding:  0;
+      position: relative;
+    }
+
+    // ── Ссылка вкладки ─────────────────────────────────────
+    .tab-link {
+      display:         inline-flex;
+      align-items:     center;
+      gap:             var(--nova-space-sm);
+      padding-block:   var(--nova-space-md);
+      padding-inline:  var(--nova-space-lg);
+      background:      transparent;
+      border:          none;
+      color:           var(--nova-text-tertiary);
+      cursor:          pointer;
+      font-weight:     var(--nova-font-weight-medium);
+      font-size:       var(--nova-font-size-sm);
+      transition:
+        color            var(--nova-transition-fast),
+        background-color var(--nova-transition-fast);
+      position:        relative;
+      text-decoration: none;
+      white-space:     nowrap;
+      border-radius:   var(--nova-radius-md) var(--nova-radius-md) 0 0;
+      user-select:     none;
+
+      svg {
+        inline-size: 16px;
+        block-size:  16px;
+        flex-shrink: 0;
+        opacity:     0.7;
+        transition:  opacity var(--nova-transition-fast);
+      }
+
+      &:hover:not([aria-selected="true"]):not([disabled]) {
+        color:            var(--nova-text-primary);
+        background-color: var(--nova-bg-secondary);
+        svg { opacity: 1; }
+      }
+
+      &.active,
+      &[aria-selected="true"] {
+        color: var(--nova-primary);
+        svg   { opacity: 1; color: var(--nova-primary); }
+
+        // Индикатор активной вкладки:
+        &::after {
+          content:           '';
+          position:          absolute;
+          inset-block-end:   -2px;
+          inset-inline:      0;
+          block-size:        2px;
+          background:        linear-gradient(
+            90deg,
+            var(--nova-primary)      0%,
+            var(--nova-primary-dark) 100%
+          );
+          border-radius:     2px 2px 0 0;
+          z-index:           1;
+        }
+      }
+
+      &[disabled],
+      &[aria-disabled="true"] {
+        opacity:        0.4;
+        cursor:         not-allowed;
+        pointer-events: none;
+      }
+
+      // Кнопка закрытия вкладки:
+      .tab-close {
+        display:         inline-flex;
+        align-items:     center;
+        justify-content: center;
+        inline-size:     18px;
+        block-size:      18px;
+        border-radius:   var(--nova-radius-full);
+        border:          none;
+        background:      transparent;
+        color:           currentColor;
+        cursor:          pointer;
+        padding:         0;
+        opacity:         0.5;
+        transition:
+          opacity          var(--nova-transition-fast),
+          background-color var(--nova-transition-fast);
+        margin-inline-start: var(--nova-space-xs);
+        font-size:       0.75em;
+        line-height:     1;
+
+        &:hover {
+          opacity:          1;
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    // ── Панель содержимого ─────────────────────────────────
+    .tab-pane {
+      display:  none;
+      padding:  var(--nova-space-xl);
+      animation:nova-tab-fade 0.25s var(--nova-easing-decelerate) both;
+
+      &.active,
+      &[aria-hidden="false"] { display: block; }
+
+      // Без паддинга:
+      &-flush { padding: 0; }
+    }
+
+    // ── Бейдж на вкладке ───────────────────────────────────
+    .tab-badge {
+      display:         inline-flex;
+      align-items:     center;
+      justify-content: center;
+      min-inline-size: 18px;
+      block-size:      18px;
+      padding-inline:  4px;
+      font-size:       0.65rem;
+      font-weight:     var(--nova-font-weight-bold);
+      border-radius:   var(--nova-radius-full);
+      background:      var(--nova-danger);
+      color:           white;
+      line-height:     1;
+    }
+
+    // ── Иконка вкладки ─────────────────────────────────────
+    .tab-icon {
+      inline-size: 18px;
+      block-size:  18px;
+      flex-shrink: 0;
+    }
+
+    // ══ ВАРИАНТЫ ════════════════════════════════════════════
+
+    // ── 1. Pill (пилюли) ───────────────────────────────────
+    &-pill {
+      .tabs-header {
+        border-block-end: none;
+        gap:              var(--nova-space-xs);
+        background:       var(--nova-bg-secondary);
+        padding:          var(--nova-space-sm);
+        border-radius:    var(--nova-radius-lg);
+        flex-wrap:        wrap;
+      }
+
+      .tab-link {
+        border-radius: var(--nova-radius-md);
+        color:         var(--nova-text-secondary);
+
+        &:hover:not([aria-selected="true"]) {
+          background-color: var(--nova-bg-tertiary);
+        }
+
+        &.active,
+        &[aria-selected="true"] {
+          background: linear-gradient(
+            135deg,
+            var(--nova-primary)      0%,
+            var(--nova-primary-dark) 100%
+          );
+          color:      white;
+          box-shadow: var(--nova-shadow-sm);
+          svg         { color: white; opacity: 1; }
+
+          // ✅ Убираем подчёркивание:
+          &::after { display: none; }
+        }
+      }
+
+      .tab-pane { padding-block-start: var(--nova-space-md); }
+    }
+
+    // ── 2. Card (карточка) ────────────────────────────────
+    &-card {
+      background:    var(--nova-bg-primary);
+      border-radius: var(--nova-radius-xl);
+      box-shadow:    var(--nova-shadow-md);
+      border:        1px solid var(--nova-border-color);
+      overflow:      hidden;
+
+      .tabs-header {
+        background:      linear-gradient(
+          135deg,
+          var(--nova-bg-secondary) 0%,
+          var(--nova-bg-primary)   100%
+        );
+        border-block-end:1px solid var(--nova-border-color);
+        border-radius:   var(--nova-radius-xl) var(--nova-radius-xl) 0 0;
+      }
+
+      .tab-link {
+        border-radius: 0;
+
+        &.active,
+        &[aria-selected="true"] {
+          background-color: var(--nova-bg-primary);
+          color:            var(--nova-primary);
+
+          &::after { display: none; }
+
+          // Рамка снизу:
+          box-shadow: inset 0 -2px 0 var(--nova-primary);
+        }
+      }
+
+      .tab-pane { padding: var(--nova-space-xl); }
+    }
+
+    // ── 3. Underline (минималистичный) ────────────────────
+    &-underline {
+      .tabs-header {
+        border-block-end: 1px solid var(--nova-border-color);
+        gap:              var(--nova-space-md);
+      }
+
+      .tab-link {
+        padding-inline: var(--nova-space-xs);
+        border-radius:  0;
+        color:          var(--nova-text-tertiary);
+        font-weight:    var(--nova-font-weight-normal);
+
+        &.active,
+        &[aria-selected="true"] {
+          color:       var(--nova-primary);
+          font-weight: var(--nova-font-weight-semibold);
+
+          &::after { inset-inline: var(--nova-space-xs); }
+        }
+      }
+    }
+
+    // ── 4. Vertical (вертикальные) ────────────────────────
+    &-vertical {
+      display: flex;
+      gap:     0;
+
+      .tabs-header {
+        flex-direction:    column;
+        border-block-end:  none;
+        // ✅ ИСПРАВЛЕНО: border-inline вместо border-right
+        border-inline-end: 2px solid var(--nova-border-color);
+        flex:              0 0 200px;
+        inline-size:       200px;
+        align-items:       stretch;
+      }
+
+      .tab-item { inline-size: 100%; }
+
+      .tab-link {
+        border-radius:     var(--nova-radius-md) 0 0 var(--nova-radius-md);
+        justify-content:   flex-start;
+        inline-size:       100%;
+        padding-inline-end:var(--nova-space-lg);
+
+        &.active,
+        &[aria-selected="true"] {
+          background-color: var(--nova-primary-50);
+          color:            var(--nova-primary);
+
+          // ✅ ИСПРАВЛЕНО: убираем горизонтальный индикатор
+          // и добавляем вертикальный через border
+          &::after { display: none; }
+
+          // Вертикальная черта справа:
+          &::before {
+            content:             '';
+            position:            absolute;
+            inset-block:         0;
+            inset-inline-end:    -2px;
+            inline-size:         2px;
+            background:          var(--nova-primary);
+            border-radius:       var(--nova-radius-sm) 0 0 var(--nova-radius-sm);
+            z-index:             1;
+          }
+        }
+      }
+
+      .tabs-content { flex: 1; min-inline-size: 0; }
+      .tab-pane     { block-size: 100%; }
+
+      // Адаптив: на узких экранах → горизонтальные
+      @container nova-tabs (max-width: 600px) {
+        flex-direction: column;
+
+        .tabs-header {
+          flex-direction:    row;
+          border-inline-end: none;
+          border-block-end:  2px solid var(--nova-border-color);
+          flex:              1;
+          inline-size:       100%;
+          overflow-x:        auto;
+        }
+
+        .tab-link {
+          border-radius: var(--nova-radius-md) var(--nova-radius-md) 0 0;
+
+          &.active,
+          &[aria-selected="true"] {
+            &::before { display: none; }
+            &::after  {
+              display:         block;
+              inset-block-end: -2px;
+              inset-inline:    0;
+              block-size:      2px;
+              inline-size:     auto;
+            }
+          }
+        }
+      }
+    }
+
+    // ── 5. Button group стиль ─────────────────────────────
+    &-buttons {
+      .tabs-header {
+        border-block-end: none;
+        gap:              0;
+        display:          inline-flex;
+        border:           1px solid var(--nova-border-color);
+        border-radius:    var(--nova-radius-lg);
+        overflow:         hidden;
+        background:       var(--nova-bg-secondary);
+      }
+
+      .tab-item { flex: 1; }
+
+      .tab-link {
+        inline-size:   100%;
+        justify-content: center;
+        border-radius: 0;
+        border-inline-end: 1px solid var(--nova-border-color);
+        color:         var(--nova-text-secondary);
+
+        &:last-child { border-inline-end: none; }
+
+        &.active,
+        &[aria-selected="true"] {
+          background:  var(--nova-bg-primary);
+          color:       var(--nova-primary);
+          box-shadow:  var(--nova-shadow-sm);
+          font-weight: var(--nova-font-weight-semibold);
+
+          &::after { display: none; }
+        }
+      }
+    }
+
+    // ── Цветовые варианты ──────────────────────────────────
+    $tab-colors: 'primary', 'secondary', 'success', 'danger', 'warning', 'info';
+
+    @each $c in $tab-colors {
+      &-#{$c} {
+        .tab-link.active,
+        .tab-link[aria-selected="true"] {
+          color: var(--nova-#{$c});
+
+          &::after {
+            background: linear-gradient(
+              90deg,
+              var(--nova-#{$c})      0%,
+              var(--nova-#{$c}-dark) 100%
+            );
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes nova-tab-fade {
+  from {
+    opacity:   0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova {
+    .tab-link    { transition: none; }
+    .tab-pane    { animation: none; }
+    .tab-link::after { transition: none; }
+  }
+}

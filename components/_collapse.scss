@@ -1,0 +1,312 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — АККОРДЕОН / COLLAPSE
+// Исправлено: символ › заменён CSS-стрелкой, логические свойства,
+// новое: nested, icon-start, always-open вариант
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  // ── Группа аккордеона ──────────────────────────────────────
+  .collapse-group {
+    border:        1px solid var(--nova-border-color);
+    border-radius: var(--nova-radius-lg);
+    overflow:      hidden;
+    background:    var(--nova-bg-primary);
+    container-type: inline-size;
+  }
+
+  // ── Пункт ────────────────────────────────────────────────
+  .collapse-item {
+    border-block-end: 1px solid var(--nova-border-color);
+    transition:       background-color var(--nova-transition-fast);
+
+    &:last-child { border-block-end: none; }
+  }
+
+  // ── Заголовок ────────────────────────────────────────────
+  .collapse-header {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--nova-space-md);
+    padding-block:   var(--nova-space-lg);
+    padding-inline:  var(--nova-space-xl);
+    background:      linear-gradient(
+      135deg,
+      var(--nova-bg-secondary) 0%,
+      var(--nova-bg-primary)   100%
+    );
+    cursor:          pointer;
+    user-select:     none;
+    transition:
+      background-color var(--nova-transition-fast),
+      color            var(--nova-transition-fast);
+    border:          none;
+    inline-size:     100%;
+    text-align:      start;
+    font-size:       var(--nova-font-size-base);
+    font-weight:     var(--nova-font-weight-semibold);
+    color:           var(--nova-text-primary);
+    // Для кнопки без стилей:
+    appearance:      none;
+    -webkit-appearance: none;
+
+    &:hover {
+      background-color: var(--nova-bg-tertiary);
+    }
+
+    &:focus-visible {
+      outline:        2px solid var(--nova-primary);
+      outline-offset: -2px;
+    }
+
+    &.active {
+      background: linear-gradient(
+        135deg,
+        var(--nova-primary-50)  0%,
+        var(--nova-primary-100) 100%
+      );
+      color: var(--nova-primary-dark);
+
+      .collapse-toggle { transform: rotate(180deg); }
+    }
+
+    // Иконка слева:
+    &-icon {
+      flex-shrink:       0;
+      inline-size:       24px;
+      block-size:        24px;
+      display:           flex;
+      align-items:       center;
+      justify-content:   center;
+      color:             var(--nova-primary);
+      margin-inline-end: var(--nova-space-sm);
+
+      svg {
+        inline-size: 18px;
+        block-size:  18px;
+      }
+    }
+
+    &-text { flex: 1; }
+
+    &-subtitle {
+      display:     block;
+      font-size:   var(--nova-font-size-sm);
+      font-weight: var(--nova-font-weight-normal);
+      color:       var(--nova-text-tertiary);
+      margin-block-start: 2px;
+    }
+  }
+
+  // ── Стрелка (CSS треугольник — без символа ›) ─────────────
+  .collapse-toggle {
+    flex-shrink: 0;
+    inline-size: 24px;
+    block-size:  24px;
+    display:     flex;
+    align-items: center;
+    justify-content: center;
+    transition:  transform var(--nova-transition-base);
+    color:       var(--nova-text-tertiary);
+    margin-inline-start: auto;
+
+    // ✅ ИСПРАВЛЕНО: CSS стрелка вместо ›
+    &::after {
+      content:       '';
+      display:       block;
+      inline-size:   8px;
+      block-size:    8px;
+      border-inline-end:  2px solid currentColor;
+      border-block-end:   2px solid currentColor;
+      transform:          rotate(45deg);
+      transition:         transform var(--nova-transition-base),
+                          border-color var(--nova-transition-fast);
+      margin-block-end:   3px; // визуальный центр
+    }
+
+    .collapse-header.active & {
+      color: var(--nova-primary);
+      &::after { transform: rotate(-135deg); margin-block-end: -3px; }
+    }
+  }
+
+  // ── Тело ─────────────────────────────────────────────────
+  .collapse-body {
+    overflow:   hidden;
+    max-height: 0;
+    // transition задаётся через JS для корректной высоты
+    padding-inline: var(--nova-space-xl);
+    padding-block:  0;
+  }
+
+  .collapse-item.active .collapse-body {
+    // max-height и padding задаются через JS (nova.js)
+    // CSS-only fallback:
+    padding-block: var(--nova-space-lg);
+  }
+
+  .collapse-content {
+    color:       var(--nova-text-secondary);
+    line-height: var(--nova-line-height-relaxed);
+    font-size:   var(--nova-font-size-base);
+
+    p:last-child  { margin-block-end: 0; }
+
+    // Вложенные списки в контенте:
+    ul, ol {
+      padding-inline-start: var(--nova-space-lg);
+      margin-block-end:     var(--nova-space-sm);
+    }
+  }
+
+  // ── Цветовые варианты ────────────────────────────────────
+  $collapse-colors: 'primary', 'success', 'danger', 'warning', 'info';
+
+  @each $c in $collapse-colors {
+    & .collapse-group-#{$c} {
+      border-color: var(--nova-#{$c}-200);
+
+      .collapse-header.active {
+        background: linear-gradient(
+          135deg,
+          var(--nova-#{$c})      0%,
+          var(--nova-#{$c}-dark) 100%
+        );
+        color: white;
+
+        .collapse-toggle {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+
+      .collapse-item {
+        border-block-end-color: var(--nova-#{$c}-100);
+      }
+    }
+  }
+
+  // ── Flush (без рамок) ─────────────────────────────────────
+  & .collapse-group-flush {
+    border:        none;
+    border-radius: 0;
+    background:    transparent;
+
+    .collapse-item {
+      border-block-end-color: var(--nova-border-color);
+    }
+
+    .collapse-header {
+      background:     transparent;
+      padding-inline: 0;
+
+      &:hover        { background-color: transparent; color: var(--nova-primary); }
+      &.active       { background:       transparent; color: var(--nova-primary); }
+    }
+
+    .collapse-body   { padding-inline: 0; }
+  }
+
+  // ── Flat (с рамкой 2px) ───────────────────────────────────
+  & .collapse-group-flat {
+    border:        2px solid var(--nova-border-color);
+
+    .collapse-header {
+      background: transparent;
+
+      &:hover     { background-color: var(--nova-bg-secondary); }
+      &.active {
+        background-color: var(--nova-primary-50);
+        border-block-end: 2px solid var(--nova-primary);
+        color:            var(--nova-primary-dark);
+      }
+    }
+  }
+
+  // ── Simple (минималистичный) ──────────────────────────────
+  & .collapse-group-simple {
+    border:     none;
+    background: transparent;
+
+    .collapse-item { border-block-end: 1px solid var(--nova-border-color); }
+
+    .collapse-header {
+      background:     transparent;
+      padding-inline: 0;
+
+      &:hover        { background:       transparent; color: var(--nova-primary); }
+      &.active {
+        background:   transparent;
+        color:        var(--nova-primary);
+        border-block-end: 2px solid var(--nova-primary);
+      }
+    }
+
+    .collapse-body   { padding-inline: 0; }
+  }
+
+  // ── Elevated (с тенями) ───────────────────────────────────
+  & .collapse-group-elevated {
+    box-shadow: var(--nova-shadow-md);
+    border:     none;
+
+    .collapse-item {
+      box-shadow: inset 0 -1px 0 var(--nova-border-color);
+    }
+  }
+
+  // ── Вложенный аккордеон ───────────────────────────────────
+  & .collapse-nested {
+    margin-block-start: var(--nova-space-md);
+    border:             1px solid var(--nova-border-color);
+    border-radius:      var(--nova-radius-md);
+    overflow:           hidden;
+
+    .collapse-header {
+      padding-block:  var(--nova-space-md);
+      padding-inline: var(--nova-space-lg);
+      font-size:      var(--nova-font-size-sm);
+    }
+
+    .collapse-body { padding-inline: var(--nova-space-lg); }
+  }
+
+  // ── Размеры ──────────────────────────────────────────────
+  & .collapse-group-sm {
+    .collapse-header {
+      padding-block:  var(--nova-space-md);
+      padding-inline: var(--nova-space-lg);
+      font-size:      var(--nova-font-size-sm);
+    }
+
+    .collapse-body   { padding-inline: var(--nova-space-lg); }
+    .collapse-content{ font-size: var(--nova-font-size-sm); }
+  }
+
+  & .collapse-group-lg {
+    .collapse-header {
+      padding-block:  var(--nova-space-xl);
+      padding-inline: var(--nova-space-2xl);
+      font-size:      var(--nova-font-size-lg);
+    }
+
+    .collapse-body { padding-inline: var(--nova-space-2xl); }
+  }
+
+  // ── Адаптив ──────────────────────────────────────────────
+  @media (max-width: 576px) {
+    .collapse-header {
+      padding-block:  var(--nova-space-md);
+      padding-inline: var(--nova-space-lg);
+    }
+
+    .collapse-body { padding-inline: var(--nova-space-lg); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova {
+    .collapse-toggle  { transition: none; }
+    .collapse-toggle::after { transition: none; }
+    .collapse-body    { transition: none !important; }
+  }
+}

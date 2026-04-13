@@ -1,0 +1,314 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — КНОПКИ
+// Исправлено: map-get вложенный, цветные тени, btn-icon конфликт
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  // ── Конфигурация ───────────────────────────────────────────
+  $btn-colors: 'primary', 'secondary', 'success',
+               'danger', 'warning', 'info';
+
+  // ✅ ИСПРАВЛЕНО: плоская структура для совместимости
+  $btn-size-xs-px: var(--nova-space-sm);
+  $btn-size-xs-py: var(--nova-space-xs);
+  $btn-size-xs-fs: var(--nova-font-size-xs);
+
+  $btn-size-sm-px: var(--nova-space-md);
+  $btn-size-sm-py: var(--nova-space-sm);
+  $btn-size-sm-fs: var(--nova-font-size-sm);
+
+  $btn-size-md-px: var(--nova-space-lg);
+  $btn-size-md-py: var(--nova-space-md);
+  $btn-size-md-fs: var(--nova-font-size-base);
+
+  $btn-size-lg-px: var(--nova-space-xl);
+  $btn-size-lg-py: var(--nova-space-lg);
+  $btn-size-lg-fs: var(--nova-font-size-lg);
+
+  $btn-size-xl-px: var(--nova-space-2xl);
+  $btn-size-xl-py: var(--nova-space-xl);
+  $btn-size-xl-fs: var(--nova-font-size-xl);
+
+  // ✅ ИСПРАВЛЕНО: цветные тени для каждого варианта
+  $btn-shadow-colors: (
+    'primary':   rgba(99,  102, 241, 0.35),
+    'secondary': rgba(139, 92,  246, 0.35),
+    'success':   rgba(16,  185, 129, 0.35),
+    'danger':    rgba(239, 68,  68,  0.35),
+    'warning':   rgba(245, 158, 11,  0.35),
+    'info':      rgba(59,  130, 246, 0.35),
+  );
+
+  // ── Базовая кнопка ─────────────────────────────────────────
+  .btn {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    gap:             var(--nova-space-sm);
+    padding-block:   $btn-size-md-py;
+    padding-inline:  $btn-size-md-px;
+    font-family:     var(--nova-font-family);
+    font-size:       $btn-size-md-fs;
+    font-weight:     var(--nova-font-weight-semibold);
+    line-height:     var(--nova-line-height-tight);
+    border:          none;
+    border-radius:   var(--nova-radius-lg);
+    cursor:          pointer;
+    transition:
+      transform         var(--nova-transition-fast),
+      box-shadow        var(--nova-transition-fast),
+      background-color  var(--nova-transition-fast),
+      color             var(--nova-transition-fast),
+      opacity           var(--nova-transition-fast);
+    text-decoration:  none;
+    white-space:      nowrap;
+    user-select:      none;
+    position:         relative;
+    overflow:         hidden;
+    // Улучшаем tap target на мобильных:
+    touch-action:     manipulation;
+    // Предотвращаем артефакты при transform:
+    will-change:      transform;
+    -webkit-tap-highlight-color: transparent;
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      opacity:        0.5;
+      cursor:         not-allowed;
+      pointer-events: none;
+    }
+
+    // Focus ring (глобальный из reset + специфичный):
+    &:focus-visible {
+      outline:        2px solid var(--nova-primary);
+      outline-offset: 3px;
+    }
+
+    // ── Размеры ──────────────────────────────────────────────
+    &-xs {
+      padding-block:  $btn-size-xs-py;
+      padding-inline: $btn-size-xs-px;
+      font-size:      $btn-size-xs-fs;
+      border-radius:  var(--nova-radius-md);
+    }
+    &-sm {
+      padding-block:  $btn-size-sm-py;
+      padding-inline: $btn-size-sm-px;
+      font-size:      $btn-size-sm-fs;
+    }
+    &-lg {
+      padding-block:  $btn-size-lg-py;
+      padding-inline: $btn-size-lg-px;
+      font-size:      $btn-size-lg-fs;
+      border-radius:  var(--nova-radius-xl);
+    }
+    &-xl {
+      padding-block:  $btn-size-xl-py;
+      padding-inline: $btn-size-xl-px;
+      font-size:      $btn-size-xl-fs;
+      border-radius:  var(--nova-radius-xl);
+    }
+
+    // ── Основные варианты с градиентами ──────────────────────
+    @each $c in $btn-colors {
+      $shadow: map-get($btn-shadow-colors, $c);
+
+      &-#{$c} {
+        background: linear-gradient(
+          135deg,
+          var(--nova-#{$c})      0%,
+          var(--nova-#{$c}-dark) 100%
+        );
+        color:      white;
+        box-shadow: 0 4px 15px $shadow;
+
+        &:hover:not(:disabled):not([aria-disabled="true"]) {
+          transform:  translateY(-2px);
+          background: linear-gradient(
+            135deg,
+            var(--nova-#{$c}-light) 0%,
+            var(--nova-#{$c})       100%
+          );
+          box-shadow: 0 8px 25px $shadow;
+        }
+
+        &:active:not(:disabled) {
+          transform:  translateY(0);
+          box-shadow: 0 2px 8px $shadow;
+        }
+
+        &:focus-visible {
+          outline-color: var(--nova-#{$c});
+        }
+      }
+
+      // Outline:
+      &-outline-#{$c} {
+        background: transparent;
+        color:      var(--nova-#{$c});
+        border:     2px solid var(--nova-#{$c});
+
+        &:hover:not(:disabled) {
+          background: var(--nova-#{$c}-50);
+          box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        &:active:not(:disabled) {
+          background: var(--nova-#{$c}-100);
+        }
+      }
+    }
+
+    // ── Ghost и Link ──────────────────────────────────────────
+    &-ghost {
+      background: transparent;
+      color:      var(--nova-text-primary);
+      border:     none;
+
+      &:hover:not(:disabled) {
+        background-color: var(--nova-bg-tertiary);
+        color:            var(--nova-primary);
+      }
+
+      &-primary {
+        color: var(--nova-primary);
+        &:hover:not(:disabled) {
+          background-color: var(--nova-primary-50);
+          color:            var(--nova-primary-dark);
+        }
+      }
+    }
+
+    &-link {
+      background:      transparent;
+      color:           var(--nova-primary);
+      border:          none;
+      padding:         0;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover:not(:disabled) {
+        color:           var(--nova-primary-dark);
+        text-decoration: underline;
+      }
+    }
+
+    // ── Иконки ────────────────────────────────────────────────
+    // ✅ ИСПРАВЛЕНО: разделены модификатор иконки и размеры
+    &-with-icon {
+      // Кнопка с текстом + иконкой (не квадратная)
+      svg {
+        width:     1.25em;
+        height:    1.25em;
+        flex-shrink: 0;
+      }
+    }
+
+    // Квадратные кнопки-иконки (без текста):
+    &-icon {
+      padding:       0;
+      border-radius: var(--nova-radius-lg);
+      inline-size:   44px;
+      block-size:    44px;
+
+      svg {
+        width:  24px;
+        height: 24px;
+      }
+
+      &-sm {
+        inline-size: 36px;
+        block-size:  36px;
+        svg { width: 18px; height: 18px; }
+      }
+
+      &-lg {
+        inline-size: 52px;
+        block-size:  52px;
+        svg { width: 28px; height: 28px; }
+      }
+    }
+
+    // ── Группа кнопок ─────────────────────────────────────────
+    &-group {
+      display:     inline-flex;
+      align-items: center;
+
+      .btn {
+        border-radius: 0;
+        margin:        0;
+
+        &:not(:last-child) {
+          border-inline-end: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        &:first-child {
+          border-start-start-radius: var(--nova-radius-lg);
+          border-end-start-radius:   var(--nova-radius-lg);
+        }
+        &:last-child {
+          border-start-end-radius: var(--nova-radius-lg);
+          border-end-end-radius:   var(--nova-radius-lg);
+        }
+      }
+    }
+
+    // ── Загрузка ──────────────────────────────────────────────
+    &.is-loading {
+      pointer-events: none;
+      opacity:        0.8;
+      color:          transparent; // скрываем текст
+
+      &::after {
+        content:      '';
+        position:     absolute;
+        inset-block-start:  50%;
+        inset-inline-start: 50%;
+        inline-size:  18px;
+        block-size:   18px;
+        margin-block-start:  -9px;
+        margin-inline-start: -9px;
+        border:       2px solid rgba(255, 255, 255, 0.4);
+        border-radius:50%;
+        border-block-start-color: white;
+        animation:    nova-spin 0.6s linear infinite;
+      }
+    }
+
+    // ── Полная ширина ──────────────────────────────────────────
+    &-block {
+      inline-size:     100%;
+      justify-content: center;
+    }
+
+    // ── Ripple эффект ─────────────────────────────────────────
+    &::before {
+      content:        '';
+      position:       absolute;
+      inset-block-start:  50%;
+      inset-inline-start: 50%;
+      inline-size:    0;
+      block-size:     0;
+      border-radius:  50%;
+      background:     rgba(255, 255, 255, 0.3);
+      transform:      translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    &.ripple::before {
+      animation: nova-ripple 0.6s ease-out;
+    }
+  }
+}
+
+// ── Анимации (глобальные, уникальный префикс) ──────────────────
+@keyframes nova-ripple {
+  to {
+    inline-size: 300px;
+    block-size:  300px;
+    opacity:     0;
+  }
+}
+
+@keyframes nova-spin {
+  to { transform: rotate(360deg); }
+}

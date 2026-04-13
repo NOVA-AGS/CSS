@@ -1,0 +1,574 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — КАРТОЧКИ
+// Исправлено: container queries вместо медиа, логические свойства,
+// новое: skeleton, flip, tilt, pricing, profile карточки
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  .card {
+    background:    var(--nova-bg-primary);
+    border-radius: var(--nova-radius-xl);
+    box-shadow:    var(--nova-shadow-md);
+    overflow:      hidden;
+    transition:
+      box-shadow  var(--nova-transition-base),
+      transform   var(--nova-transition-base),
+      border-color var(--nova-transition-base);
+    border:        1px solid var(--nova-border-color);
+    position:      relative;
+    // Container query для адаптации внутри любого контейнера:
+    container-type: inline-size;
+    container-name: nova-card;
+
+    &:hover {
+      box-shadow: var(--nova-shadow-lg);
+      transform:  translateY(-4px);
+    }
+
+    // ── Секции ───────────────────────────────────────────────
+    &-header {
+      padding-block:   var(--nova-space-lg);
+      padding-inline:  var(--nova-space-xl);
+      border-block-end:1px solid var(--nova-border-color);
+      background:      linear-gradient(
+        135deg,
+        var(--nova-bg-secondary) 0%,
+        var(--nova-bg-primary)   100%
+      );
+      display:         flex;
+      align-items:     center;
+      justify-content: space-between;
+      gap:             var(--nova-space-md);
+
+      h1, h2, h3, h4, h5, h6 {
+        margin:      0;
+        font-size:   var(--nova-font-size-lg);
+        font-weight: var(--nova-font-weight-semibold);
+      }
+
+      &-colored {
+        background: linear-gradient(
+          135deg,
+          var(--nova-primary)      0%,
+          var(--nova-primary-dark) 100%
+        );
+        color:            white;
+        border-block-end: none;
+
+        h1, h2, h3, h4, h5, h6 { color: white; }
+      }
+
+      // Цветные заголовки для каждого варианта:
+      @each $c in 'success', 'danger', 'warning', 'info' {
+        &-#{$c} {
+          background: linear-gradient(
+            135deg,
+            var(--nova-#{$c})      0%,
+            var(--nova-#{$c}-dark) 100%
+          );
+          color:            white;
+          border-block-end: none;
+        }
+      }
+    }
+
+    &-body {
+      padding-block:  var(--nova-space-xl);
+      padding-inline: var(--nova-space-xl);
+
+      &:last-child {
+        border-end-start-radius: var(--nova-radius-xl);
+        border-end-end-radius:   var(--nova-radius-xl);
+      }
+    }
+
+    &-footer {
+      padding-block:  var(--nova-space-lg);
+      padding-inline: var(--nova-space-xl);
+      border-block-start: 1px solid var(--nova-border-color);
+      background:     var(--nova-bg-secondary);
+      display:        flex;
+      align-items:    center;
+      gap:            var(--nova-space-md);
+      justify-content:flex-end;
+      flex-wrap:      wrap;
+    }
+
+    // ── Медиа ────────────────────────────────────────────────
+    &-image {
+      inline-size: 100%;
+      block-size:  auto;
+      object-fit:  cover;
+      display:     block;
+      transition:  transform var(--nova-transition-slow);
+    }
+
+    &-image-top {
+      border-start-start-radius: var(--nova-radius-xl);
+      border-start-end-radius:   var(--nova-radius-xl);
+    }
+
+    &-image-bottom {
+      border-end-start-radius: var(--nova-radius-xl);
+      border-end-end-radius:   var(--nova-radius-xl);
+    }
+
+    // Зум изображения при hover:
+    &-image-zoom {
+      overflow: hidden;
+      .card-image {
+        &:hover { transform: scale(1.05); }
+      }
+    }
+
+    // Фиксированная высота изображения:
+    &-image-fixed {
+      .card-image {
+        block-size:  200px;
+        object-fit:  cover;
+      }
+    }
+
+    // ── Варианты стилей ───────────────────────────────────────
+    &-elevated {
+      box-shadow: var(--nova-shadow-xl);
+      &:hover    { box-shadow: var(--nova-shadow-2xl); }
+    }
+
+    &-flat {
+      box-shadow:  none;
+      border-width:2px;
+      &:hover {
+        border-color: var(--nova-primary);
+        box-shadow:   var(--nova-shadow-md);
+        transform:    translateY(-2px);
+      }
+    }
+
+    &-outline {
+      background:  transparent;
+      border-width:2px;
+      &:hover {
+        border-color: var(--nova-primary);
+        background:   var(--nova-bg-secondary);
+      }
+    }
+
+    &-ghost {
+      background: transparent;
+      border:     none;
+      box-shadow: none;
+      &:hover {
+        background: var(--nova-bg-secondary);
+        transform:  none;
+        box-shadow: none;
+      }
+    }
+
+    // ── Градиентные варианты ──────────────────────────────────
+    &-gradient {
+      background: linear-gradient(
+        135deg,
+        var(--nova-primary-50)   0%,
+        var(--nova-secondary-50) 100%
+      );
+      border-color: var(--nova-primary-100);
+    }
+
+    @each $c in 'primary', 'secondary', 'success', 'danger', 'warning', 'info' {
+      &-gradient-#{$c} {
+        background: linear-gradient(
+          135deg,
+          var(--nova-#{$c})      0%,
+          var(--nova-#{$c}-dark) 100%
+        );
+        color:  white;
+        border: none;
+
+        .card-header {
+          background:       rgba(0, 0, 0, 0.12);
+          border-block-end: rgba(255, 255, 255, 0.1);
+          color:            white;
+        }
+        .card-footer {
+          background:         rgba(0, 0, 0, 0.08);
+          border-block-start: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+
+    // ── Горизонтальная раскладка ──────────────────────────────
+    &-horizontal {
+      display:        flex;
+      flex-direction: row;
+      overflow:       visible;
+      // Переключаемся на вертикальный вид при узком контейнере:
+      @container nova-card (max-width: 480px) {
+        flex-direction: column;
+
+        .card-image {
+          inline-size:               100%;
+          border-start-start-radius: var(--nova-radius-xl);
+          border-start-end-radius:   var(--nova-radius-xl);
+          border-end-start-radius:   0;
+        }
+      }
+
+      .card-image {
+        inline-size:               40%;
+        block-size:                auto;
+        min-block-size:            200px;
+        object-fit:                cover;
+        border-start-start-radius: var(--nova-radius-xl);
+        border-end-start-radius:   var(--nova-radius-xl);
+        border-start-end-radius:   0;
+      }
+
+      .card-body { flex: 1; }
+    }
+
+    // ── Оверлей ───────────────────────────────────────────────
+    &-overlay {
+      position: relative;
+
+      .card-image {
+        block-size:  300px;
+        object-fit:  cover;
+        inline-size: 100%;
+      }
+
+      .card-body {
+        position:   absolute;
+        inset-block-end:  0;
+        inset-inline: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.85) 0%,
+          rgba(0, 0, 0, 0.4)  50%,
+          transparent         100%
+        );
+        color: white;
+        border-radius: 0 0 var(--nova-radius-xl) var(--nova-radius-xl);
+
+        h1, h2, h3, h4, h5, h6, p { color: white; }
+      }
+    }
+
+    // ── Статистика ────────────────────────────────────────────
+    &-stat {
+      text-align: center;
+      padding:    var(--nova-space-xl);
+
+      &-icon {
+        display:         inline-flex;
+        align-items:     center;
+        justify-content: center;
+        inline-size:     56px;
+        block-size:      56px;
+        border-radius:   var(--nova-radius-xl);
+        background:      var(--nova-primary-50);
+        color:           var(--nova-primary);
+        margin-block-end:var(--nova-space-md);
+        font-size:       var(--nova-font-size-2xl);
+
+        svg {
+          inline-size: 28px;
+          block-size:  28px;
+        }
+      }
+
+      &-value {
+        font-size:        var(--nova-font-size-4xl);
+        font-weight:      var(--nova-font-weight-extrabold);
+        color:            var(--nova-primary);
+        margin-block-end: var(--nova-space-xs);
+        line-height:      1;
+        font-variant-numeric: tabular-nums;
+        letter-spacing:   -0.02em;
+      }
+
+      &-label {
+        font-size:      var(--nova-font-size-sm);
+        color:          var(--nova-text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight:    var(--nova-font-weight-semibold);
+      }
+
+      &-change {
+        display:     inline-flex;
+        align-items: center;
+        gap:         var(--nova-space-xs);
+        font-size:   var(--nova-font-size-sm);
+        font-weight: var(--nova-font-weight-medium);
+        margin-block-start: var(--nova-space-xs);
+
+        &-up   { color: var(--nova-success); }
+        &-down { color: var(--nova-danger); }
+      }
+    }
+
+    // ── Профиль ───────────────────────────────────────────────
+    &-profile {
+      text-align: center;
+
+      .card-avatar {
+        inline-size:  80px;
+        block-size:   80px;
+        border-radius:var(--nova-radius-full);
+        object-fit:   cover;
+        margin-inline:auto;
+        margin-block-end: var(--nova-space-md);
+        border:       3px solid var(--nova-bg-primary);
+        box-shadow:   var(--nova-shadow-md);
+      }
+
+      .card-name {
+        font-size:        var(--nova-font-size-xl);
+        font-weight:      var(--nova-font-weight-bold);
+        margin-block-end: var(--nova-space-xs);
+      }
+
+      .card-role {
+        font-size:   var(--nova-font-size-sm);
+        color:       var(--nova-text-tertiary);
+        margin-block-end: var(--nova-space-lg);
+      }
+
+      .card-stats {
+        display:               grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:                   var(--nova-space-md);
+        border-block-start:    1px solid var(--nova-border-color);
+        padding-block-start:   var(--nova-space-lg);
+
+        .card-stat-item {
+          text-align: center;
+          .value {
+            font-size:   var(--nova-font-size-xl);
+            font-weight: var(--nova-font-weight-bold);
+            color:       var(--nova-primary);
+          }
+          .label {
+            font-size: var(--nova-font-size-xs);
+            color:     var(--nova-text-tertiary);
+          }
+        }
+      }
+    }
+
+    // ── Pricing ───────────────────────────────────────────────
+    &-pricing {
+      text-align: center;
+
+      &-badge {
+        display:         inline-block;
+        margin-block-end:var(--nova-space-md);
+      }
+
+      &-name {
+        font-size:        var(--nova-font-size-xl);
+        font-weight:      var(--nova-font-weight-bold);
+        margin-block-end: var(--nova-space-sm);
+      }
+
+      &-price {
+        display:          flex;
+        align-items:      baseline;
+        justify-content:  center;
+        gap:              var(--nova-space-xs);
+        margin-block-end: var(--nova-space-lg);
+
+        .currency {
+          font-size:   var(--nova-font-size-xl);
+          font-weight: var(--nova-font-weight-semibold);
+          color:       var(--nova-text-secondary);
+        }
+        .amount {
+          font-size:      var(--nova-font-size-5xl);
+          font-weight:    var(--nova-font-weight-extrabold);
+          color:          var(--nova-text-primary);
+          letter-spacing: -0.03em;
+          line-height:    1;
+        }
+        .period {
+          font-size: var(--nova-font-size-sm);
+          color:     var(--nova-text-tertiary);
+        }
+      }
+
+      &-features {
+        list-style:       none;
+        padding:          0;
+        margin-block-end: var(--nova-space-xl);
+        text-align:       start;
+
+        li {
+          display:          flex;
+          align-items:      center;
+          gap:              var(--nova-space-sm);
+          padding-block:    var(--nova-space-sm);
+          font-size:        var(--nova-font-size-sm);
+          border-block-end: 1px solid var(--nova-border-color);
+
+          &:last-child { border-block-end: none; }
+
+          &::before {
+            content:     '✓';
+            color:       var(--nova-success);
+            font-weight: var(--nova-font-weight-bold);
+            flex-shrink: 0;
+          }
+
+          &.disabled {
+            color:        var(--nova-text-tertiary);
+            &::before { color: var(--nova-text-tertiary); content: '✕'; }
+          }
+        }
+      }
+
+      // Популярный план:
+      &-featured {
+        border-color:  var(--nova-primary);
+        border-width:  2px;
+        box-shadow:    var(--nova-glow-sm), var(--nova-shadow-xl);
+        transform:     scale(1.02);
+        z-index:       1;
+
+        &:hover {
+          transform: scale(1.04) translateY(-4px);
+        }
+      }
+    }
+
+    // ── Skeleton (загрузка) ───────────────────────────────────
+    &-skeleton {
+      pointer-events: none;
+
+      .skeleton-line {
+        background:    var(--nova-bg-tertiary);
+        border-radius: var(--nova-radius-sm);
+        block-size:    1em;
+        margin-block-end: var(--nova-space-sm);
+        animation:     skeleton-shimmer 1.5s infinite;
+
+        &-sm    { inline-size: 60%; }
+        &-md    { inline-size: 80%; }
+        &-lg    { inline-size: 100%; }
+        &-title { inline-size: 50%; block-size: 1.5em; }
+      }
+
+      .skeleton-avatar {
+        inline-size:  48px;
+        block-size:   48px;
+        border-radius:var(--nova-radius-full);
+        background:   var(--nova-bg-tertiary);
+        animation:    skeleton-shimmer 1.5s infinite;
+      }
+
+      .skeleton-image {
+        inline-size: 100%;
+        block-size:  200px;
+        background:  var(--nova-bg-tertiary);
+        animation:   skeleton-shimmer 1.5s infinite;
+      }
+    }
+
+    // ── Flip карточка ─────────────────────────────────────────
+    &-flip {
+      perspective:     1000px;
+      block-size:      300px;
+      cursor:          pointer;
+      // Отменяем hover-эффект базовой карточки:
+      overflow:        visible;
+      background:      transparent;
+      border:          none;
+      box-shadow:      none;
+
+      &:hover { transform: none; }
+
+      &-inner {
+        position:        relative;
+        inline-size:     100%;
+        block-size:      100%;
+        transition:      transform 0.6s var(--nova-easing-standard);
+        transform-style: preserve-3d;
+      }
+
+      &:hover .card-flip-inner,
+      &.flipped .card-flip-inner {
+        transform: rotateY(180deg);
+      }
+
+      &-front,
+      &-back {
+        position:          absolute;
+        inset:             0;
+        backface-visibility: hidden;
+        border-radius:     var(--nova-radius-xl);
+        overflow:          hidden;
+        box-shadow:        var(--nova-shadow-md);
+      }
+
+      &-back {
+        transform:        rotateY(180deg);
+        background:       linear-gradient(
+          135deg,
+          var(--nova-primary)      0%,
+          var(--nova-primary-dark) 100%
+        );
+        color:            white;
+        display:          flex;
+        align-items:      center;
+        justify-content:  center;
+        padding:          var(--nova-space-xl);
+      }
+    }
+
+    // ── Сетки карточек ────────────────────────────────────────
+    &-grid {
+      display:               grid;
+      gap:                   var(--nova-space-xl);
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+      // Фиксированные колонки:
+      &-2 { grid-template-columns: repeat(2, 1fr); }
+      &-3 { grid-template-columns: repeat(3, 1fr); }
+      &-4 { grid-template-columns: repeat(4, 1fr); }
+
+      // Адаптив через container query:
+      @container (max-width: 640px) {
+        grid-template-columns: 1fr;
+      }
+
+      // Masonry (CSS-only):
+      &-masonry {
+        columns:      3;
+        column-gap:   var(--nova-space-xl);
+
+        .card {
+          break-inside:     avoid;
+          margin-block-end: var(--nova-space-xl);
+        }
+      }
+    }
+  }
+}
+
+// ── Анимации ───────────────────────────────────────────────────
+@keyframes skeleton-shimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .card {
+    transition: none;
+    &:hover { transform: none; }
+    &-flip-inner { transition: none; }
+    &-skeleton .skeleton-line,
+    &-skeleton .skeleton-avatar,
+    &-skeleton .skeleton-image { animation: none; }
+  }
+}

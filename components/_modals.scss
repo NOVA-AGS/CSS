@@ -1,0 +1,460 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — МОДАЛЬНЫЕ ОКНА
+// Исправлено: логические свойства, scrollbar компенсация,
+// новое: drawer, confirm dialog, image lightbox, shake анимация
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  // ── Backdrop ─────────────────────────────────────────────
+  .modal-backdrop {
+    position:   fixed;
+    inset:      0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity:    0;
+    visibility: hidden;
+    transition:
+      opacity    var(--nova-transition-base),
+      visibility var(--nova-transition-base);
+    z-index:    var(--nova-zindex-backdrop);
+    backdrop-filter:         blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+
+    &.show {
+      opacity:    1;
+      visibility: visible;
+    }
+  }
+
+  // ── Базовый модал ─────────────────────────────────────────
+  .modal {
+    position:   fixed;
+    inset:      0;
+    display:    flex;
+    align-items:center;
+    justify-content: center;
+    z-index:    var(--nova-zindex-modal);
+    opacity:    0;
+    visibility: hidden;
+    transition:
+      opacity    var(--nova-transition-base),
+      visibility var(--nova-transition-base);
+    padding:    var(--nova-space-lg);
+    // Скролл если контент больше экрана:
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &.show {
+      opacity:    1;
+      visibility: visible;
+    }
+
+    // ── Dialog ─────────────────────────────────────────────
+    &-dialog {
+      background:    var(--nova-bg-primary);
+      border-radius: var(--nova-radius-xl);
+      box-shadow:    var(--nova-shadow-2xl);
+      max-inline-size: 500px;
+      inline-size:   100%;
+      max-block-size:90dvh;
+      display:       flex;
+      flex-direction:column;
+      overflow:      hidden;
+      transform:     scale(0.92) translateY(8px);
+      transition:    transform var(--nova-transition-base);
+      border:        1px solid var(--nova-border-color);
+      position:      relative;
+
+      .modal.show & { transform: scale(1) translateY(0); }
+    }
+
+    // ── Shake (static backdrop) ───────────────────────────
+    &-shake .modal-dialog {
+      animation: modal-shake 0.3s var(--nova-easing-standard);
+    }
+
+    // ── Размеры ────────────────────────────────────────────
+    &-xs  .modal-dialog { max-inline-size: 280px; }
+    &-sm  .modal-dialog { max-inline-size: 360px; }
+    &-md  .modal-dialog { max-inline-size: 500px; }
+    &-lg  .modal-dialog { max-inline-size: 800px; }
+    &-xl  .modal-dialog { max-inline-size: 1000px; }
+    &-2xl .modal-dialog { max-inline-size: 1200px; }
+
+    &-fullscreen .modal-dialog {
+      max-inline-size: 100%;
+      max-block-size:  100%;
+      block-size:      100%;
+      border-radius:   0;
+      margin:          0;
+      border:          none;
+    }
+
+    // ── Позиционирование ───────────────────────────────────
+    &-top {
+      align-items: flex-start;
+      padding-block-start: var(--nova-space-2xl);
+
+      .modal-dialog {
+        transform: scale(0.92) translateY(-8px);
+        .modal.show & { transform: scale(1) translateY(0); }
+      }
+    }
+
+    &-bottom {
+      align-items: flex-end;
+      padding:     0;
+
+      .modal-dialog {
+        border-end-start-radius: 0;
+        border-end-end-radius:   0;
+        max-inline-size:         100%;
+        inline-size:             100%;
+        transform:               translateY(100%);
+        .modal.show &            { transform: translateY(0); }
+      }
+    }
+
+    // ── Заголовок ──────────────────────────────────────────
+    &-header {
+      display:         flex;
+      align-items:     center;
+      justify-content: space-between;
+      gap:             var(--nova-space-md);
+      padding-block:   var(--nova-space-lg);
+      padding-inline:  var(--nova-space-xl);
+      border-block-end:1px solid var(--nova-border-color);
+      background:      linear-gradient(
+        135deg,
+        var(--nova-bg-secondary) 0%,
+        var(--nova-bg-primary)   100%
+      );
+      flex-shrink: 0; // не сжимается
+
+      &-icon {
+        inline-size:   40px;
+        block-size:    40px;
+        border-radius: var(--nova-radius-lg);
+        display:       flex;
+        align-items:   center;
+        justify-content: center;
+        flex-shrink:   0;
+
+        svg { inline-size: 22px; block-size: 22px; }
+
+        @each $c in 'primary', 'success', 'danger', 'warning', 'info' {
+          &-#{$c} {
+            background: var(--nova-#{$c}-50);
+            color:      var(--nova-#{$c});
+          }
+        }
+      }
+
+      &-title {
+        font-size:   var(--nova-font-size-xl);
+        font-weight: var(--nova-font-weight-bold);
+        margin:      0;
+        color:       var(--nova-text-primary);
+        flex:        1;
+        text-wrap:   balance;
+      }
+
+      &-subtitle {
+        display:     block;
+        font-size:   var(--nova-font-size-sm);
+        font-weight: var(--nova-font-weight-normal);
+        color:       var(--nova-text-tertiary);
+        margin-block-start: 2px;
+      }
+
+      &-close {
+        inline-size:     36px;
+        block-size:      36px;
+        display:         flex;
+        align-items:     center;
+        justify-content: center;
+        background:      transparent;
+        border:          none;
+        border-radius:   var(--nova-radius-md);
+        color:           var(--nova-text-tertiary);
+        cursor:          pointer;
+        font-size:       var(--nova-font-size-xl);
+        line-height:     1;
+        flex-shrink:     0;
+        transition:
+          background-color var(--nova-transition-fast),
+          color            var(--nova-transition-fast);
+
+        &:hover {
+          background: var(--nova-bg-tertiary);
+          color:      var(--nova-text-primary);
+        }
+
+        &:focus-visible {
+          outline:        2px solid var(--nova-primary);
+          outline-offset: 2px;
+        }
+      }
+
+      // Цветные заголовки:
+      @each $c in 'primary', 'success', 'danger', 'warning', 'info' {
+        &-#{$c} {
+          background: linear-gradient(
+            135deg,
+            var(--nova-#{$c})      0%,
+            var(--nova-#{$c}-dark) 100%
+          );
+          border-block-end: none;
+          color: white;
+
+          .modal-header-title,
+          .modal-header-subtitle { color: white; }
+
+          .modal-header-close {
+            color: rgba(255, 255, 255, 0.7);
+            &:hover { background: rgba(255, 255, 255, 0.15); color: white; }
+          }
+        }
+      }
+    }
+
+    // ── Тело ───────────────────────────────────────────────
+    &-body {
+      padding-block:  var(--nova-space-xl);
+      padding-inline: var(--nova-space-xl);
+      flex:           1;
+      overflow-y:     auto;
+      color:          var(--nova-text-primary);
+      line-height:    var(--nova-line-height-normal);
+      // Стилизованный скроллбар внутри модала:
+      scrollbar-width:     thin;
+      scrollbar-color:     var(--nova-gray-300) transparent;
+
+      p:last-child { margin-block-end: 0; }
+
+      // Без паддинга:
+      &-flush {
+        padding: 0;
+        overflow:hidden;
+      }
+    }
+
+    // ── Подвал ─────────────────────────────────────────────
+    &-footer {
+      display:         flex;
+      justify-content: flex-end;
+      align-items:     center;
+      gap:             var(--nova-space-md);
+      padding-block:   var(--nova-space-lg);
+      padding-inline:  var(--nova-space-xl);
+      border-block-start: 1px solid var(--nova-border-color);
+      background:      var(--nova-bg-secondary);
+      flex-shrink:     0;
+      flex-wrap:       wrap;
+
+      // Кнопки слева:
+      &-start { justify-content: flex-start; }
+      // По центру:
+      &-center { justify-content: center; }
+      // Разнести:
+      &-between { justify-content: space-between; }
+    }
+
+    // ── Прокручиваемый контент ─────────────────────────────
+    &-scrollable {
+      .modal-body { overflow-y: auto; }
+    }
+
+    // ── Вертикальное центрирование (уже дефолт) ────────────
+    &-centered .modal-dialog { margin-block: auto; }
+
+    // ── Confirm dialog ─────────────────────────────────────
+    &-confirm {
+      .modal-dialog {
+        max-inline-size: 400px;
+        text-align:      center;
+      }
+
+      .modal-body {
+        padding-block:  var(--nova-space-2xl);
+        padding-inline: var(--nova-space-xl);
+
+        .modal-confirm-icon {
+          inline-size:     64px;
+          block-size:      64px;
+          border-radius:   var(--nova-radius-full);
+          display:         flex;
+          align-items:     center;
+          justify-content: center;
+          margin-inline:   auto;
+          margin-block-end:var(--nova-space-lg);
+          font-size:       var(--nova-font-size-3xl);
+
+          svg { inline-size: 36px; block-size: 36px; }
+
+          @each $c in 'primary', 'success', 'danger', 'warning', 'info' {
+            &-#{$c} {
+              background: var(--nova-#{$c}-50);
+              color:      var(--nova-#{$c});
+            }
+          }
+        }
+
+        .modal-confirm-title {
+          font-size:        var(--nova-font-size-xl);
+          font-weight:      var(--nova-font-weight-bold);
+          margin-block-end: var(--nova-space-sm);
+        }
+
+        .modal-confirm-message {
+          color:   var(--nova-text-secondary);
+          font-size: var(--nova-font-size-sm);
+          margin:  0;
+        }
+      }
+
+      .modal-footer { justify-content: center; gap: var(--nova-space-md); }
+    }
+
+    // ── Drawer (боковая панель) ────────────────────────────
+    &-drawer {
+      padding: 0;
+
+      .modal-dialog {
+        max-inline-size: 400px;
+        max-block-size:  100%;
+        block-size:      100%;
+        border-radius:   0;
+        margin:          0;
+        transform:       translateX(100%);
+        border:          none;
+        border-inline-start: 1px solid var(--nova-border-color);
+        // Прижимаем вправо:
+        margin-inline-start: auto;
+      }
+
+      &.show .modal-dialog { transform: translateX(0); }
+
+      // Левый drawer:
+      &-start {
+        .modal-dialog {
+          margin-inline-start: 0;
+          margin-inline-end:   auto;
+          transform:           translateX(-100%);
+          border-inline-start: none;
+          border-inline-end:   1px solid var(--nova-border-color);
+        }
+        &.show .modal-dialog { transform: translateX(0); }
+      }
+
+      // Верхний drawer:
+      &-top {
+        align-items: flex-start;
+
+        .modal-dialog {
+          max-inline-size:   100%;
+          inline-size:       100%;
+          max-block-size:    60dvh;
+          border-radius:     0;
+          border-block-end:  1px solid var(--nova-border-color);
+          border-inline:     none;
+          transform:         translateY(-100%);
+          margin:            0;
+        }
+
+        &.show .modal-dialog { transform: translateY(0); }
+      }
+    }
+
+    // ── Image Lightbox ─────────────────────────────────────
+    &-lightbox {
+      background: rgba(0, 0, 0, 0.92);
+      padding:    var(--nova-space-lg);
+
+      .modal-dialog {
+        background:    transparent;
+        border:        none;
+        box-shadow:    none;
+        max-inline-size: 90dvw;
+        max-block-size:  90dvh;
+        border-radius:  0;
+
+        img {
+          inline-size:   100%;
+          block-size:    auto;
+          max-block-size:85dvh;
+          object-fit:    contain;
+          border-radius: var(--nova-radius-lg);
+        }
+      }
+
+      .modal-header-close {
+        position: fixed;
+        inset-block-start: var(--nova-space-lg);
+        inset-inline-end:  var(--nova-space-lg);
+        background:        rgba(0, 0, 0, 0.5);
+        color:             white;
+        z-index:           1;
+
+        &:hover { background: rgba(0, 0, 0, 0.8); }
+      }
+
+      // Навигация:
+      .modal-lightbox-prev,
+      .modal-lightbox-next {
+        position:        absolute;
+        inset-block:     0;
+        display:         flex;
+        align-items:     center;
+        padding-inline:  var(--nova-space-md);
+        background:      rgba(0, 0, 0, 0.3);
+        border:          none;
+        color:           white;
+        cursor:          pointer;
+        transition:      background var(--nova-transition-fast);
+        font-size:       var(--nova-font-size-3xl);
+
+        &:hover { background: rgba(0, 0, 0, 0.6); }
+      }
+
+      .modal-lightbox-prev { inset-inline-start: 0; border-start-end-radius: var(--nova-radius-lg); border-end-end-radius: var(--nova-radius-lg); }
+      .modal-lightbox-next { inset-inline-end:   0; border-start-start-radius: var(--nova-radius-lg); border-end-start-radius: var(--nova-radius-lg); }
+    }
+
+    // ── Адаптив ────────────────────────────────────────────
+    @media (max-width: 576px) {
+      padding: var(--nova-space-md);
+
+      &-dialog {
+        max-inline-size: 100%;
+        border-radius:   var(--nova-radius-lg);
+      }
+
+      &-sm .modal-dialog,
+      &-md .modal-dialog,
+      &-lg .modal-dialog { max-inline-size: 100%; }
+
+      &-header { padding-inline: var(--nova-space-lg); }
+      &-body   { padding-inline: var(--nova-space-lg); }
+      &-footer { padding-inline: var(--nova-space-lg); }
+
+      &-drawer .modal-dialog { max-inline-size: 100%; }
+    }
+  }
+}
+
+// ── Анимации ───────────────────────────────────────────────────
+@keyframes modal-shake {
+  0%, 100% { transform: scale(1) translateX(0); }
+  20%       { transform: scale(1) translateX(-6px); }
+  40%       { transform: scale(1) translateX(6px); }
+  60%       { transform: scale(1) translateX(-4px); }
+  80%       { transform: scale(1) translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .modal {
+    &-dialog    { transition: none; }
+    &-backdrop  { transition: none; }
+    &-shake .modal-dialog { animation: none; }
+  }
+}

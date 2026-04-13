@@ -1,0 +1,203 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — БЕЙДЖИ
+// Исправлено: -50/-900 переменные заменены реальными,
+// логические свойства, новое: счётчик, статус-точка, группа
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  .badge {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    gap:             0.3em;
+    padding-block:   0.25em;
+    padding-inline:  0.65em;
+    font-size:       var(--nova-font-size-xs);
+    font-weight:     var(--nova-font-weight-semibold);
+    line-height:     1;
+    white-space:     nowrap;
+    vertical-align:  middle;
+    border-radius:   var(--nova-radius-full);
+    border:          1px solid transparent;
+    transition:      all var(--nova-transition-fast);
+
+    // ── Цветовые варианты ────────────────────────────────────
+    $badge-shadows: (
+      'primary':   rgba(99,  102, 241, 0.3),
+      'secondary': rgba(139, 92,  246, 0.3),
+      'success':   rgba(16,  185, 129, 0.3),
+      'warning':   rgba(245, 158, 11,  0.3),
+      'danger':    rgba(239, 68,  68,  0.3),
+      'info':      rgba(59,  130, 246, 0.3),
+    );
+
+    @each $color, $shadow in $badge-shadows {
+      // Градиентный (по умолчанию):
+      &-#{$color} {
+        background: linear-gradient(
+          135deg,
+          var(--nova-#{$color})      0%,
+          var(--nova-#{$color}-dark) 100%
+        );
+        color:      white;
+        box-shadow: 0 2px 8px $shadow;
+
+        &:hover {
+          box-shadow: 0 4px 12px $shadow;
+          transform:  translateY(-1px);
+        }
+      }
+
+      // Мягкий (light):
+      &-#{$color}-light {
+        background-color: var(--nova-#{$color}-50);
+        color:            var(--nova-#{$color}-dark);
+        border-color:     var(--nova-#{$color}-200);
+      }
+
+      // Outline:
+      &-#{$color}-outline {
+        background-color: transparent;
+        color:            var(--nova-#{$color});
+        border-color:     var(--nova-#{$color});
+      }
+
+      // Tonal (полупрозрачный фон):
+      &-#{$color}-tonal {
+        background-color: var(--nova-#{$color}-100);
+        color:            var(--nova-#{$color}-900);
+        border-color:     transparent;
+      }
+    }
+
+    // Нейтральный:
+    &-neutral {
+      background-color: var(--nova-bg-tertiary);
+      color:            var(--nova-text-secondary);
+      border-color:     var(--nova-border-color);
+    }
+
+    // ── Размеры ──────────────────────────────────────────────
+    &-xs {
+      padding-block:  0.1em;
+      padding-inline: 0.4em;
+      font-size:      0.6rem;
+    }
+    &-sm {
+      padding-block:  0.15em;
+      padding-inline: 0.5em;
+      font-size:      0.65rem;
+    }
+    &-lg {
+      padding-block:  0.35em;
+      padding-inline: 0.85em;
+      font-size:      var(--nova-font-size-sm);
+    }
+
+    // ── Форма ────────────────────────────────────────────────
+    &-square {
+      border-radius: var(--nova-radius-sm);
+      padding-inline: 0.5em;
+    }
+
+    &-rounded {
+      border-radius: var(--nova-radius-md);
+    }
+
+    // ── С иконкой ────────────────────────────────────────────
+    &-icon {
+      svg {
+        inline-size: 0.85em;
+        block-size:  0.85em;
+        flex-shrink: 0;
+      }
+    }
+
+    // ── Счётчик (число в кружке) ──────────────────────────────
+    &-count {
+      min-inline-size: 1.5em;
+      block-size:      1.5em;
+      padding:         0;
+      border-radius:   var(--nova-radius-full);
+      font-variant-numeric: tabular-nums;
+      font-weight:     var(--nova-font-weight-bold);
+
+      // Большие числа:
+      &[data-count="99+"] { min-inline-size: 2em; }
+    }
+
+    // ── Статус-точка ──────────────────────────────────────────
+    &-dot {
+      inline-size:  8px;
+      block-size:   8px;
+      min-inline-size: 8px;
+      padding:      0;
+      border-radius:var(--nova-radius-full);
+      border:       2px solid var(--nova-bg-primary);
+
+      &-lg {
+        inline-size: 12px;
+        block-size:  12px;
+        min-inline-size: 12px;
+      }
+    }
+
+    // ── Пульсация ─────────────────────────────────────────────
+    &-pulse {
+      position: relative;
+
+      &::after {
+        content:       '';
+        position:      absolute;
+        inset:         0;
+        border-radius: inherit;
+        background:    inherit;
+        animation:     badge-pulse-ring 2s
+                       cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        opacity:       0.6;
+      }
+    }
+
+    // ── Позиционирование (уведомление на иконке) ──────────────
+    &-positioned {
+      position:         absolute;
+      inset-block-start: -6px;
+      inset-inline-end:  -6px;
+      z-index:          1;
+    }
+  }
+
+  // ── Обёртка для позиционирования бейджа ───────────────────
+  .badge-wrapper {
+    position: relative;
+    display:  inline-flex;
+  }
+
+  // ── Группа бейджей ────────────────────────────────────────
+  .badge-group {
+    display:     inline-flex;
+    align-items: center;
+    gap:         var(--nova-space-xs);
+    flex-wrap:   wrap;
+  }
+}
+
+// ── Анимации ───────────────────────────────────────────────────
+@keyframes badge-pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity:   0.6;
+  }
+  70% {
+    transform: scale(1.8);
+    opacity:   0;
+  }
+  100% {
+    transform: scale(1);
+    opacity:   0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .badge-pulse::after { animation: none; }
+}

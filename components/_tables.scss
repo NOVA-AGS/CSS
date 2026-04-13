@@ -1,0 +1,441 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ТАБЛИЦЫ
+// Исправлено: visually-hidden для thead на мобильных,
+// логические свойства, новое: sticky header/column,
+// sortable, expandable rows, data grid
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  .table {
+    inline-size:      100%;
+    margin-block-end: var(--nova-space-lg);
+    border-collapse:  collapse;
+    border-spacing:   0;
+    background:       var(--nova-bg-primary);
+    color:            var(--nova-text-primary);
+    font-size:        var(--nova-font-size-sm);
+    container-type:   inline-size;
+    container-name:   nova-table;
+
+    // Скругление углов через обёртку:
+    &-wrap {
+      border-radius: var(--nova-radius-xl);
+      overflow:      hidden;
+      box-shadow:    var(--nova-shadow-md);
+      border:        1px solid var(--nova-border-color);
+    }
+
+    // ── Заголовок ────────────────────────────────────────
+    thead {
+      background: linear-gradient(
+        135deg,
+        var(--nova-bg-secondary) 0%,
+        var(--nova-bg-primary)   100%
+      );
+
+      th {
+        padding-block:    var(--nova-space-md);
+        padding-inline:   var(--nova-space-lg);
+        font-weight:      var(--nova-font-weight-semibold);
+        font-size:        var(--nova-font-size-xs);
+        text-align:       start;
+        text-transform:   uppercase;
+        letter-spacing:   0.05em;
+        border-block-end: 2px solid var(--nova-border-color);
+        color:            var(--nova-text-tertiary);
+        white-space:      nowrap;
+        user-select:      none;
+        vertical-align:   middle;
+
+        // Sortable:
+        &.sortable {
+          cursor:  pointer;
+          transition: color var(--nova-transition-fast),
+                      background-color var(--nova-transition-fast);
+
+          &:hover {
+            background-color: var(--nova-bg-tertiary);
+            color:            var(--nova-text-primary);
+          }
+
+          &::after {
+            content:            ' ↕';
+            opacity:            0.4;
+            font-size:          0.85em;
+            display:            inline-block;
+            margin-inline-start:var(--nova-space-xs);
+          }
+
+          &.sort-asc::after  { content: ' ↑'; opacity: 1; color: var(--nova-primary); }
+          &.sort-desc::after { content: ' ↓'; opacity: 1; color: var(--nova-primary); }
+        }
+      }
+    }
+
+    // ── Тело ─────────────────────────────────────────────
+    tbody {
+      tr {
+        border-block-end: 1px solid var(--nova-border-color);
+        transition:       background-color var(--nova-transition-fast);
+
+        &:last-child { border-block-end: none; }
+
+        &:hover { background-color: var(--nova-bg-secondary); }
+
+        // Выбранная строка:
+        &.selected {
+          background-color: var(--nova-primary-50);
+          color:            var(--nova-primary-dark);
+
+          td { border-block-end-color: var(--nova-primary-100); }
+        }
+
+        // Expandable:
+        &.expanded {
+          background-color: var(--nova-bg-secondary);
+        }
+
+        &.expanded + tr.table-expand-row {
+          td {
+            padding-block:    var(--nova-space-lg);
+            padding-inline:   var(--nova-space-xl);
+            background:       var(--nova-bg-secondary);
+            border-block-end: 2px solid var(--nova-primary-100);
+          }
+        }
+      }
+
+      td {
+        padding-block:  var(--nova-space-md);
+        padding-inline: var(--nova-space-lg);
+        vertical-align: middle;
+        color:          var(--nova-text-primary);
+        line-height:    var(--nova-line-height-normal);
+      }
+    }
+
+    // ── Подвал ───────────────────────────────────────────
+    tfoot {
+      background:      var(--nova-bg-secondary);
+      border-block-start: 2px solid var(--nova-border-color);
+
+      th, td {
+        padding-block:  var(--nova-space-md);
+        padding-inline: var(--nova-space-lg);
+        font-weight:    var(--nova-font-weight-semibold);
+        color:          var(--nova-text-secondary);
+        font-size:      var(--nova-font-size-xs);
+      }
+    }
+
+    // ── Модификаторы ─────────────────────────────────────
+
+    // Полосатая:
+    &-striped tbody tr:nth-child(odd) {
+      background-color: var(--nova-bg-secondary);
+      &:hover { background-color: var(--nova-bg-tertiary); }
+    }
+
+    // С рамками:
+    &-bordered {
+      thead th,
+      tbody td,
+      tfoot th,
+      tfoot td {
+        border: 1px solid var(--nova-border-color);
+      }
+
+      thead th { border-block-end-width: 2px; }
+    }
+
+    // Компактная:
+    &-sm {
+      thead th { padding-block: var(--nova-space-sm); padding-inline: var(--nova-space-md); }
+      tbody td { padding-block: var(--nova-space-sm); padding-inline: var(--nova-space-md); }
+      tfoot th,
+      tfoot td { padding-block: var(--nova-space-sm); padding-inline: var(--nova-space-md); }
+    }
+
+    // Просторная:
+    &-lg {
+      thead th { padding-block: var(--nova-space-lg); padding-inline: var(--nova-space-xl); }
+      tbody td { padding-block: var(--nova-space-lg); padding-inline: var(--nova-space-xl); }
+    }
+
+    // Hover с акцентом:
+    &-hover tbody tr:hover {
+      background-color: var(--nova-primary-50);
+    }
+
+    // Без рамок:
+    &-borderless {
+      tbody tr { border-block-end: none; }
+    }
+
+    // С тенью:
+    &-shadow { box-shadow: var(--nova-shadow-lg); }
+
+    // ── Цвета строк ──────────────────────────────────────
+    $row-colors: (
+      'primary': (var(--nova-primary-50),   var(--nova-primary-100)),
+      'success': (var(--nova-success-50),   var(--nova-success-100)),
+      'danger':  (var(--nova-danger-50),    var(--nova-danger-100)),
+      'warning': (var(--nova-warning-50),   var(--nova-warning-100)),
+      'info':    (var(--nova-info-50),      var(--nova-info-100)),
+    );
+
+    @each $c, $colors in $row-colors {
+      tbody tr.row-#{$c} {
+        background-color: nth($colors, 1);
+        &:hover          { background-color: nth($colors, 2); }
+
+        td { color: var(--nova-text-primary); }
+      }
+    }
+
+    // ── Цвета ячеек ──────────────────────────────────────
+    $cell-colors: (
+      'primary': (var(--nova-primary-50),  var(--nova-primary-dark)),
+      'success': (var(--nova-success-50),  var(--nova-success-700)),
+      'danger':  (var(--nova-danger-50),   var(--nova-danger-dark)),
+      'warning': (var(--nova-warning-50),  var(--nova-warning-800)),
+      'info':    (var(--nova-info-50),     var(--nova-info-dark)),
+    );
+
+    @each $c, $colors in $cell-colors {
+      td.cell-#{$c} {
+        background-color: nth($colors, 1);
+        color:            nth($colors, 2);
+        font-weight:      var(--nova-font-weight-medium);
+      }
+    }
+
+    // ── Sticky header ─────────────────────────────────────
+    &-sticky-header {
+      thead th {
+        position:          sticky;
+        inset-block-start: 0;
+        z-index:           2;
+        background:        var(--nova-bg-secondary);
+        box-shadow:        0 2px 4px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    // ── Sticky первая колонка ─────────────────────────────
+    &-sticky-col {
+      thead th:first-child,
+      tbody td:first-child,
+      tfoot td:first-child {
+        position:          sticky;
+        inset-inline-start:0;
+        z-index:           1;
+        background:        var(--nova-bg-primary);
+        box-shadow:        2px 0 4px rgba(0, 0, 0, 0.05);
+      }
+
+      thead th:first-child {
+        z-index: 3;
+        background: var(--nova-bg-secondary);
+      }
+    }
+
+    // ── Чекбокс колонка ───────────────────────────────────
+    &-select {
+      thead th:first-child,
+      tbody td:first-child {
+        inline-size:    48px;
+        min-inline-size:48px;
+        max-inline-size:48px;
+        text-align:     center;
+        padding-inline: var(--nova-space-sm);
+      }
+
+      input[type="checkbox"] {
+        cursor:       pointer;
+        accent-color: var(--nova-primary);
+        inline-size:  16px;
+        block-size:   16px;
+      }
+    }
+
+    // ── Колонка действий ──────────────────────────────────
+    &-actions-col {
+      td.table-actions,
+      th.table-actions {
+        text-align:  end;
+        white-space: nowrap;
+        inline-size: 1%;  // минимальная ширина
+      }
+
+      .table-action-btn {
+        display:         inline-flex;
+        align-items:     center;
+        justify-content: center;
+        inline-size:     32px;
+        block-size:      32px;
+        border-radius:   var(--nova-radius-md);
+        border:          none;
+        background:      transparent;
+        color:           var(--nova-text-tertiary);
+        cursor:          pointer;
+        transition:
+          background-color var(--nova-transition-fast),
+          color            var(--nova-transition-fast);
+
+        svg { inline-size: 16px; block-size: 16px; }
+
+        &:hover {
+          background-color: var(--nova-bg-tertiary);
+          color:            var(--nova-text-primary);
+        }
+
+        &-danger:hover {
+          background-color: var(--nova-danger-50);
+          color:            var(--nova-danger);
+        }
+      }
+    }
+
+    // ── Адаптив (карточный режим) ─────────────────────────
+    &-responsive {
+      display:                 block;
+      inline-size:             100%;
+      overflow-x:              auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width:         thin;
+
+      > .table { margin-block-end: 0; }
+    }
+
+    // ✅ ИСПРАВЛЕНО: visually-hidden вместо display:none
+    @container nova-table (max-width: 640px) {
+      &-card-mode {
+        thead {
+          // Скрываем визуально, но доступно для скринридеров:
+          position:   absolute;
+          inline-size:1px;
+          block-size: 1px;
+          padding:    0;
+          margin:     -1px;
+          overflow:   hidden;
+          clip:       rect(0, 0, 0, 0);
+          white-space:nowrap;
+          border:     0;
+        }
+
+        tbody,
+        tbody tr,
+        tbody td {
+          display:    block;
+          inline-size:100%;
+        }
+
+        tbody tr {
+          margin-block-end: var(--nova-space-md);
+          border:           1px solid var(--nova-border-color);
+          border-radius:    var(--nova-radius-lg);
+          overflow:         hidden;
+          box-shadow:       var(--nova-shadow-sm);
+        }
+
+        tbody td {
+          display:         flex;
+          justify-content: space-between;
+          align-items:     center;
+          text-align:      end;
+          padding-inline:  var(--nova-space-lg);
+          border-block-end:1px solid var(--nova-bg-tertiary);
+
+          &:last-child { border-block-end: none; }
+
+          // Label из data-label атрибута:
+          &::before {
+            content:     attr(data-label);
+            font-weight: var(--nova-font-weight-semibold);
+            font-size:   var(--nova-font-size-xs);
+            color:       var(--nova-text-tertiary);
+            text-align:  start;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+            margin-inline-end: var(--nova-space-md);
+          }
+        }
+      }
+    }
+
+    // Обычный responsive scroll на мобильных:
+    @media (max-width: 640px) {
+      &-responsive-scroll {
+        display:   block;
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+
+        &::after {
+          content:    '';
+          position:   absolute;
+          inset-block:0;
+          inset-inline-end: 0;
+          inline-size:32px;
+          background: linear-gradient(
+            to inline-end,
+            transparent,
+            var(--nova-bg-primary)
+          );
+          pointer-events: none;
+        }
+      }
+    }
+
+    // ── Empty state ───────────────────────────────────────
+    &-empty {
+      td {
+        text-align:  center;
+        padding:     var(--nova-space-3xl) var(--nova-space-xl);
+        color:       var(--nova-text-tertiary);
+
+        .table-empty-icon {
+          inline-size:      48px;
+          block-size:       48px;
+          margin-inline:    auto;
+          margin-block-end: var(--nova-space-md);
+          opacity:          0.4;
+        }
+
+        .table-empty-title {
+          font-size:        var(--nova-font-size-base);
+          font-weight:      var(--nova-font-weight-semibold);
+          color:            var(--nova-text-secondary);
+          margin-block-end: var(--nova-space-sm);
+        }
+
+        .table-empty-desc {
+          font-size: var(--nova-font-size-sm);
+        }
+      }
+    }
+
+    // ── Loading state ─────────────────────────────────────
+    &-loading {
+      position: relative;
+
+      &::after {
+        content:    '';
+        position:   absolute;
+        inset:      0;
+        background: rgba(var(--nova-bg-primary), 0.7);
+        backdrop-filter: blur(2px);
+        z-index:    1;
+      }
+
+      tbody td { opacity: 0.4; }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .table {
+    tbody tr   { transition: none; }
+    thead th.sortable { transition: none; }
+  }
+}

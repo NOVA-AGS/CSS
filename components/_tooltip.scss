@@ -1,0 +1,247 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ПОДСКАЗКИ
+// Исправлено: логические свойства, новое: rich tooltip,
+// arrow позиционирование улучшено, max-width адаптивный
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  .tooltip {
+    position:        fixed;
+    z-index:         var(--nova-zindex-tooltip);
+    max-inline-size: min(280px, 90vw);
+    padding-block:   var(--nova-space-sm);
+    padding-inline:  var(--nova-space-md);
+    font-size:       var(--nova-font-size-xs);
+    font-weight:     var(--nova-font-weight-medium);
+    line-height:     var(--nova-line-height-normal);
+    color:           white;
+    background:      rgba(15, 23, 42, 0.92);
+    border-radius:   var(--nova-radius-lg);
+    box-shadow:      var(--nova-shadow-lg);
+    opacity:         0;
+    visibility:      hidden;
+    transition:
+      opacity    var(--nova-transition-fast),
+      visibility var(--nova-transition-fast),
+      transform  var(--nova-transition-fast);
+    pointer-events:  none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    // Предотвращаем выход за экран:
+    word-break:      break-word;
+
+    &.show {
+      opacity:    1;
+      visibility: visible;
+      pointer-events: none; // tooltip не перехватывает события
+    }
+
+    &-content {
+      margin: 0;
+      white-space: normal;
+    }
+
+    // ── Стрелка ──────────────────────────────────────────
+    &::before {
+      content:       '';
+      position:      absolute;
+      border:        6px solid transparent;
+      pointer-events:none;
+    }
+
+    // ── Позиции ──────────────────────────────────────────
+
+    // Сверху:
+    &-top {
+      transform: translateY(-4px);
+      &.show    { transform: translateY(0); }
+
+      &::before {
+        inset-block-end:  -12px;
+        inset-inline-start:50%;
+        transform:         translateX(-50%);
+        border-block-start-color: rgba(15, 23, 42, 0.92);
+        border-block-end:  none;
+      }
+    }
+
+    // Снизу:
+    &-bottom {
+      transform: translateY(4px);
+      &.show    { transform: translateY(0); }
+
+      &::before {
+        inset-block-start: -12px;
+        inset-inline-start:50%;
+        transform:          translateX(-50%);
+        border-block-end-color: rgba(15, 23, 42, 0.92);
+        border-block-start: none;
+      }
+    }
+
+    // Слева (inline-start):
+    &-left,
+    &-start {
+      transform: translateX(-4px);
+      &.show    { transform: translateX(0); }
+
+      &::before {
+        inset-inline-end:   -12px;
+        inset-block-start:  50%;
+        transform:           translateY(-50%);
+        border-inline-start-color: rgba(15, 23, 42, 0.92);
+        border-inline-end:  none;
+      }
+    }
+
+    // Справа (inline-end):
+    &-right,
+    &-end {
+      transform: translateX(4px);
+      &.show    { transform: translateX(0); }
+
+      &::before {
+        inset-inline-start: -12px;
+        inset-block-start:  50%;
+        transform:           translateY(-50%);
+        border-inline-end-color: rgba(15, 23, 42, 0.92);
+        border-inline-start: none;
+      }
+    }
+
+    // ── Цветовые варианты ────────────────────────────────
+    $tooltip-colors: (
+      'primary':   var(--nova-primary),
+      'success':   var(--nova-success),
+      'danger':    var(--nova-danger),
+      'warning':   var(--nova-warning-dark),
+      'info':      var(--nova-info),
+      'light': (
+        bg:    white,
+        color: var(--nova-text-primary),
+      ),
+    );
+
+    @each $c in 'primary', 'success', 'danger', 'warning', 'info' {
+      &-#{$c} {
+        background: var(--nova-#{$c});
+
+        &.tooltip-top::before    { border-block-start-color: var(--nova-#{$c}); }
+        &.tooltip-bottom::before { border-block-end-color:   var(--nova-#{$c}); }
+        &.tooltip-left::before,
+        &.tooltip-start::before  { border-inline-start-color: var(--nova-#{$c}); }
+        &.tooltip-right::before,
+        &.tooltip-end::before    { border-inline-end-color: var(--nova-#{$c}); }
+      }
+    }
+
+    // Светлый тултип:
+    &-light {
+      background: white;
+      color:      var(--nova-text-primary);
+      border:     1px solid var(--nova-border-color);
+      box-shadow: var(--nova-shadow-xl);
+
+      &.tooltip-top::before    { border-block-start-color: white; }
+      &.tooltip-bottom::before { border-block-end-color:   white; }
+      &.tooltip-left::before   { border-inline-start-color: white; }
+      &.tooltip-right::before  { border-inline-end-color:  white; }
+    }
+
+    // ── Размеры ──────────────────────────────────────────
+    &-sm {
+      font-size:      var(--nova-font-size-xs);
+      padding-block:  4px;
+      padding-inline: var(--nova-space-sm);
+      border-radius:  var(--nova-radius-md);
+    }
+
+    &-lg {
+      max-inline-size:   320px;
+      font-size:         var(--nova-font-size-sm);
+      padding-block:     var(--nova-space-md);
+      padding-inline:    var(--nova-space-lg);
+    }
+
+    // ── Rich tooltip (с заголовком и кнопками) ────────────
+    &-rich {
+      max-inline-size: 300px;
+      padding:         0;
+      overflow:        hidden;
+      pointer-events:  auto; // rich tooltip интерактивный
+
+      .tooltip-rich-header {
+        padding-block:  var(--nova-space-sm);
+        padding-inline: var(--nova-space-md);
+        background:     rgba(255, 255, 255, 0.1);
+        font-weight:    var(--nova-font-weight-semibold);
+        font-size:      var(--nova-font-size-sm);
+        border-block-end: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tooltip-rich-body {
+        padding-block:  var(--nova-space-sm);
+        padding-inline: var(--nova-space-md);
+        font-size:      var(--nova-font-size-xs);
+        line-height:    var(--nova-line-height-relaxed);
+      }
+
+      .tooltip-rich-footer {
+        padding-block:  var(--nova-space-sm);
+        padding-inline: var(--nova-space-md);
+        display:        flex;
+        gap:            var(--nova-space-xs);
+        justify-content:flex-end;
+        border-block-start: 1px solid rgba(255, 255, 255, 0.1);
+        background:     rgba(0, 0, 0, 0.1);
+      }
+
+      .tooltip-rich-btn {
+        padding-block:  4px;
+        padding-inline: var(--nova-space-sm);
+        font-size:      var(--nova-font-size-xs);
+        border-radius:  var(--nova-radius-md);
+        border:         1px solid rgba(255, 255, 255, 0.3);
+        background:     transparent;
+        color:          white;
+        cursor:         pointer;
+        transition:     background-color var(--nova-transition-fast);
+
+        &:hover { background: rgba(255, 255, 255, 0.15); }
+
+        &-primary {
+          background:   var(--nova-primary);
+          border-color: var(--nova-primary);
+        }
+      }
+    }
+
+    // ── Без стрелки ──────────────────────────────────────
+    &-no-arrow::before { display: none; }
+
+    // ── Multiline ────────────────────────────────────────
+    &-multiline .tooltip-content { white-space: normal; }
+  }
+
+  // ── Trigger element стиль ────────────────────────────────
+  [data-tooltip] {
+    cursor: help;
+    // Визуальный намёк на наличие подсказки:
+    text-decoration-line:  underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--nova-text-tertiary);
+    text-underline-offset: 3px;
+  }
+
+  // Для кнопок и интерактивных — без подчёркивания:
+  button[data-tooltip],
+  a[data-tooltip],
+  [role="button"][data-tooltip] {
+    text-decoration: none;
+    cursor:          pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .tooltip { transition: none; }
+}

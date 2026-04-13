@@ -1,0 +1,419 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — УВЕДОМЛЕНИЯ (TOASTS)
+// Исправлено: $toast-variants map, progress вложенность,
+// логические свойства, aria-live стили,
+// новое: stacked toasts, action кнопка
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+
+  // ── Контейнеры позиционирования ────────────────────────
+  .toast-container {
+    position:       fixed;
+    z-index:        var(--nova-zindex-tooltip);
+    pointer-events: none;
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--nova-space-sm);
+    max-inline-size:360px;
+    inline-size:    100%;
+
+    // ✅ Все 6 позиций:
+    &.toast-top-start {
+      inset-block-start: var(--nova-space-lg);
+      inset-inline-start:var(--nova-space-lg);
+    }
+
+    &.toast-top-center {
+      inset-block-start: var(--nova-space-lg);
+      inset-inline-start:50%;
+      transform:         translateX(-50%);
+    }
+
+    &.toast-top-end {
+      inset-block-start: var(--nova-space-lg);
+      inset-inline-end:  var(--nova-space-lg);
+    }
+
+    &.toast-bottom-start {
+      inset-block-end:   var(--nova-space-lg);
+      inset-inline-start:var(--nova-space-lg);
+      flex-direction:    column-reverse;
+    }
+
+    &.toast-bottom-center {
+      inset-block-end:   var(--nova-space-lg);
+      inset-inline-start:50%;
+      transform:         translateX(-50%);
+      flex-direction:    column-reverse;
+    }
+
+    &.toast-bottom-end {
+      inset-block-end:  var(--nova-space-lg);
+      inset-inline-end: var(--nova-space-lg);
+      flex-direction:   column-reverse;
+    }
+  }
+
+  // ── Базовый тост ──────────────────────────────────────
+  .toast {
+    pointer-events:  auto;
+    inline-size:     100%;
+    max-inline-size: 360px;
+    background:      var(--nova-bg-primary);
+    border-radius:   var(--nova-radius-xl);
+    box-shadow:      var(--nova-shadow-xl);
+    border:          1px solid var(--nova-border-color);
+    overflow:        hidden;
+    display:         flex;
+    flex-direction:  column;
+    position:        relative;
+    animation:       toast-in-end 0.3s var(--nova-easing-decelerate) both;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    // Start позиции — другое направление анимации:
+    .toast-top-start &,
+    .toast-bottom-start & {
+      animation-name: toast-in-start;
+    }
+
+    // Center позиции — fade + drop:
+    .toast-top-center &,
+    .toast-bottom-center & {
+      animation-name: toast-in-center;
+    }
+
+    &.toast-dismissing {
+      animation:      toast-out-end 0.25s var(--nova-easing-accelerate) forwards;
+      pointer-events: none;
+
+      .toast-top-start &,
+      .toast-bottom-start & { animation-name: toast-out-start; }
+
+      .toast-top-center &,
+      .toast-bottom-center & { animation-name: toast-out-center; }
+    }
+
+    // ── Основная строка ─────────────────────────────────
+    &-row {
+      display:     flex;
+      align-items: stretch;
+    }
+
+    // ── Полоска-индикатор слева ─────────────────────────
+    &-indicator {
+      inline-size:   4px;
+      min-inline-size: 4px;
+      background:    var(--nova-primary);
+      border-radius: 0;
+      flex-shrink:   0;
+    }
+
+    // ── Иконка ──────────────────────────────────────────
+    &-icon {
+      display:         flex;
+      align-items:     center;
+      justify-content: center;
+      padding-block:   var(--nova-space-lg);
+      padding-inline:  var(--nova-space-md);
+      flex-shrink:     0;
+
+      svg {
+        inline-size: 22px;
+        block-size:  22px;
+      }
+    }
+
+    // ── Контент ─────────────────────────────────────────
+    &-content {
+      flex:            1;
+      padding-block:   var(--nova-space-md);
+      padding-inline-start: var(--nova-space-md);
+      padding-inline-end:   var(--nova-space-sm);
+      display:         flex;
+      flex-direction:  column;
+      justify-content: center;
+      min-inline-size: 0;
+    }
+
+    &-title {
+      font-weight:   var(--nova-font-weight-semibold);
+      font-size:     var(--nova-font-size-sm);
+      color:         var(--nova-text-primary);
+      margin:        0;
+      line-height:   var(--nova-line-height-tight);
+    }
+
+    &-message {
+      font-size:          var(--nova-font-size-sm);
+      color:              var(--nova-text-secondary);
+      margin:             0;
+      margin-block-start: 2px;
+      line-height:        var(--nova-line-height-normal);
+      // Длинный текст:
+      overflow-wrap:      break-word;
+    }
+
+    // ── Действие ────────────────────────────────────────
+    &-action {
+      display:            block;
+      margin-block-start: var(--nova-space-sm);
+      font-size:          var(--nova-font-size-xs);
+      font-weight:        var(--nova-font-weight-semibold);
+      color:              var(--nova-primary);
+      text-decoration:    none;
+      cursor:             pointer;
+      background:         none;
+      border:             none;
+      padding:            0;
+
+      &:hover { text-decoration: underline; }
+    }
+
+    // ── Кнопка закрытия ─────────────────────────────────
+    &-close {
+      display:         flex;
+      align-items:     flex-start;
+      justify-content: center;
+      padding-block:   var(--nova-space-md);
+      padding-inline:  var(--nova-space-sm);
+      background:      transparent;
+      border:          none;
+      cursor:          pointer;
+      color:           var(--nova-text-tertiary);
+      font-size:       var(--nova-font-size-lg);
+      line-height:     1;
+      transition:      color var(--nova-transition-fast);
+      flex-shrink:     0;
+
+      &:hover { color: var(--nova-text-primary); }
+      &:focus-visible {
+        outline:        2px solid var(--nova-primary);
+        outline-offset: -2px;
+        border-radius:  var(--nova-radius-sm);
+      }
+    }
+
+    // ── Прогресс-бар ─────────────────────────────────────
+    &-progress {
+      block-size:  3px;
+      background:  var(--nova-primary);
+      // ✅ ИСПРАВЛЕНО: не вложен сам в себя
+      // Задаётся animation-duration через JS или inline style
+      animation:   toast-progress linear forwards;
+      transform-origin: start;
+    }
+
+    // ══ ЦВЕТОВЫЕ ВАРИАНТЫ ══════════════════════════════════
+
+    // ✅ ИСПРАВЛЕНО: map вместо сломанного списка списков
+    $toast-variants: (
+      'primary': (
+        bg:         var(--nova-primary-50),
+        bg2:        var(--nova-primary-100),
+        border:     var(--nova-primary-200),
+        indicator:  var(--nova-primary),
+        icon:       var(--nova-primary),
+        title:      var(--nova-primary-dark),
+        progress:   var(--nova-primary),
+      ),
+      'success': (
+        bg:         var(--nova-success-50),
+        bg2:        var(--nova-success-100),
+        border:     var(--nova-success-200),
+        indicator:  var(--nova-success),
+        icon:       var(--nova-success),
+        title:      var(--nova-success-700),
+        progress:   var(--nova-success),
+      ),
+      'danger': (
+        bg:         var(--nova-danger-50),
+        bg2:        var(--nova-danger-100),
+        border:     var(--nova-danger-200),
+        indicator:  var(--nova-danger),
+        icon:       var(--nova-danger),
+        title:      var(--nova-danger-dark),
+        progress:   var(--nova-danger),
+      ),
+      'warning': (
+        bg:         var(--nova-warning-50),
+        bg2:        var(--nova-warning-100),
+        border:     var(--nova-warning-200),
+        indicator:  var(--nova-warning),
+        icon:       var(--nova-warning-dark),
+        title:      var(--nova-warning-800),
+        progress:   var(--nova-warning),
+      ),
+      'info': (
+        bg:         var(--nova-info-50),
+        bg2:        var(--nova-info-100),
+        border:     var(--nova-info-200),
+        indicator:  var(--nova-info),
+        icon:       var(--nova-info),
+        title:      var(--nova-info-dark),
+        progress:   var(--nova-info),
+      ),
+    );
+
+    @each $name, $props in $toast-variants {
+      &-#{$name} {
+        background: linear-gradient(
+          135deg,
+          map-get($props, bg)  0%,
+          map-get($props, bg2) 100%
+        );
+        border-color: map-get($props, border);
+
+        .toast-indicator { background: map-get($props, indicator); }
+        .toast-icon      { color:      map-get($props, icon); }
+        .toast-title     { color:      map-get($props, title); }
+        .toast-progress  { background: map-get($props, progress); }
+        .toast-action    { color:      map-get($props, indicator); }
+      }
+    }
+
+    // Сплошные варианты:
+    @each $c in 'primary', 'success', 'danger', 'warning', 'info' {
+      &-solid-#{$c} {
+        background: linear-gradient(
+          135deg,
+          var(--nova-#{$c})      0%,
+          var(--nova-#{$c}-dark) 100%
+        );
+        border-color: transparent;
+        color:        white;
+
+        .toast-title,
+        .toast-message { color: white; }
+
+        .toast-indicator { background: rgba(255, 255, 255, 0.3); }
+        .toast-close     { color: rgba(255, 255, 255, 0.7);
+          &:hover        { color: white; }
+        }
+        .toast-progress  { background: rgba(255, 255, 255, 0.5); }
+        .toast-action    { color: rgba(255, 255, 255, 0.9);
+          &:hover        { color: white; }
+        }
+      }
+    }
+
+    // ── Размеры ─────────────────────────────────────────
+    &-sm {
+      .toast-title   { font-size: var(--nova-font-size-xs); }
+      .toast-message { font-size: var(--nova-font-size-xs); }
+      .toast-content { padding-block: var(--nova-space-sm); }
+    }
+
+    &-lg {
+      max-inline-size: 440px;
+      .toast-icon svg { inline-size: 28px; block-size: 28px; }
+    }
+  }
+
+  // ── Stacked toasts (наложение) ────────────────────────
+  .toast-stacked {
+    position: relative;
+
+    .toast {
+      transition: transform var(--nova-transition-base),
+                  box-shadow var(--nova-transition-base);
+
+      &:not(:first-child) {
+        position:       absolute;
+        inset-block-end:0;
+        inset-inline:   0;
+        z-index:        -1;
+        transform:      translateY(8px) scale(0.96);
+        box-shadow:     var(--nova-shadow-sm);
+        pointer-events: none;
+      }
+
+      &:nth-child(3) {
+        transform: translateY(16px) scale(0.92);
+        z-index:   -2;
+      }
+    }
+
+    &:hover .toast:not(:first-child) {
+      position:   static;
+      transform:  none;
+      z-index:    auto;
+      box-shadow: var(--nova-shadow-xl);
+      pointer-events: auto;
+    }
+  }
+
+  // ── Адаптив ───────────────────────────────────────────
+  @media (max-width: 480px) {
+    .toast-container {
+      max-inline-size:   100%;
+      padding-inline:    var(--nova-space-md);
+
+      &.toast-top-start,
+      &.toast-top-center,
+      &.toast-top-end {
+        inset-block-start: 0;
+        inset-inline:      0;
+        transform:         none;
+        padding-block-start: var(--nova-space-sm);
+        border-radius:     0;
+      }
+
+      &.toast-bottom-start,
+      &.toast-bottom-center,
+      &.toast-bottom-end {
+        inset-block-end: 0;
+        inset-inline:    0;
+        transform:       none;
+        padding-block-end: var(--nova-space-sm);
+      }
+    }
+
+    .toast { max-inline-size: 100%; }
+  }
+}
+
+// ── Анимации ───────────────────────────────────────────────────
+@keyframes toast-in-end {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes toast-out-end {
+  from { transform: translateX(0);    opacity: 1; max-block-size: 200px; margin-block-end: var(--nova-space-sm); }
+  to   { transform: translateX(110%); opacity: 0; max-block-size: 0;     margin-block-end: 0; }
+}
+
+@keyframes toast-in-start {
+  from { transform: translateX(-110%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+@keyframes toast-out-start {
+  from { transform: translateX(0);      opacity: 1; }
+  to   { transform: translateX(-110%);  opacity: 0; }
+}
+
+@keyframes toast-in-center {
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+@keyframes toast-out-center {
+  from { transform: translateY(0);     opacity: 1; }
+  to   { transform: translateY(-20px); opacity: 0; }
+}
+
+@keyframes toast-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .toast {
+    animation:              none;
+    &.toast-dismissing      { display: none; }
+    .toast-progress         { animation: none; }
+  }
+}

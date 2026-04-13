@@ -1,0 +1,382 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ПАГИНАЦИЯ
+// Исправлено: логические свойства, новое: load more,
+// infinite scroll индикатор, jump to page, mini вариант
+// ═══════════════════════════════════════════════════════════════
+
+.nova {
+  .pagination {
+    display:     flex;
+    align-items: center;
+    gap:         var(--nova-space-xs);
+    list-style:  none;
+    margin:      0;
+    padding:     0;
+    flex-wrap:   wrap;
+
+    // ── Элемент ────────────────────────────────────────────
+    &-item { display: inline-flex; }
+
+    // ── Ссылка / кнопка ────────────────────────────────────
+    &-link {
+      display:         inline-flex;
+      align-items:     center;
+      justify-content: center;
+      min-inline-size: 40px;
+      block-size:      40px;
+      padding-inline:  var(--nova-space-sm);
+      border:          1px solid var(--nova-border-color);
+      border-radius:   var(--nova-radius-lg);
+      color:           var(--nova-text-primary);
+      background:      var(--nova-bg-primary);
+      text-decoration: none;
+      font-size:       var(--nova-font-size-sm);
+      font-weight:     var(--nova-font-weight-medium);
+      cursor:          pointer;
+      transition:
+        background-color var(--nova-transition-fast),
+        border-color     var(--nova-transition-fast),
+        color            var(--nova-transition-fast),
+        transform        var(--nova-transition-fast),
+        box-shadow       var(--nova-transition-fast);
+      user-select:     none;
+      line-height:     1;
+      white-space:     nowrap;
+
+      &:hover:not(.disabled):not(.active) {
+        border-color:     var(--nova-primary);
+        color:            var(--nova-primary);
+        background:       var(--nova-primary-50);
+        transform:        translateY(-2px);
+        box-shadow:       var(--nova-shadow-sm);
+      }
+
+      &.active {
+        background: linear-gradient(
+          135deg,
+          var(--nova-primary)      0%,
+          var(--nova-primary-dark) 100%
+        );
+        color:        white;
+        border-color: var(--nova-primary-dark);
+        box-shadow:   0 4px 12px rgba(99, 102, 241, 0.3);
+        font-weight:  var(--nova-font-weight-semibold);
+        cursor:       default;
+        transform:    none;
+      }
+
+      &.disabled {
+        opacity:        0.45;
+        cursor:         not-allowed;
+        pointer-events: none;
+        background:     var(--nova-bg-secondary);
+        color:          var(--nova-text-tertiary);
+        border-color:   var(--nova-border-color);
+      }
+
+      svg {
+        inline-size: 16px;
+        block-size:  16px;
+        flex-shrink: 0;
+      }
+    }
+
+    // ── Prev / Next стрелки ────────────────────────────────
+    &-prev,
+    &-next {
+      .pagination-link {
+        gap:         var(--nova-space-xs);
+        padding-inline: var(--nova-space-md);
+        font-weight: var(--nova-font-weight-semibold);
+      }
+    }
+
+    &-prev .pagination-link::before {
+      content:      '←';
+      font-size:    1.1em;
+      line-height:  1;
+    }
+
+    &-next .pagination-link::after {
+      content:     '→';
+      font-size:   1.1em;
+      line-height: 1;
+    }
+
+    // First / Last:
+    &-first .pagination-link::before { content: '«'; font-size: 1.1em; }
+    &-last  .pagination-link::after  { content: '»'; font-size: 1.1em; }
+
+    // ── Многоточие ─────────────────────────────────────────
+    &-ellipsis {
+      display:         inline-flex;
+      align-items:     center;
+      justify-content: center;
+      min-inline-size: 40px;
+      block-size:      40px;
+      color:           var(--nova-text-tertiary);
+      cursor:          default;
+      user-select:     none;
+      font-weight:     var(--nova-font-weight-bold);
+      letter-spacing:  0.1em;
+    }
+
+    // ── Размеры ────────────────────────────────────────────
+    &-xs &-link {
+      min-inline-size: 28px;
+      block-size:      28px;
+      font-size:       var(--nova-font-size-xs);
+      border-radius:   var(--nova-radius-md);
+      padding-inline:  var(--nova-space-xs);
+    }
+
+    &-sm &-link {
+      min-inline-size: 34px;
+      block-size:      34px;
+      font-size:       var(--nova-font-size-sm);
+      border-radius:   var(--nova-radius-md);
+    }
+
+    &-lg &-link {
+      min-inline-size: 48px;
+      block-size:      48px;
+      font-size:       var(--nova-font-size-base);
+      border-radius:   var(--nova-radius-xl);
+      padding-inline:  var(--nova-space-md);
+    }
+
+    &-xl &-link {
+      min-inline-size: 56px;
+      block-size:      56px;
+      font-size:       var(--nova-font-size-lg);
+      border-radius:   var(--nova-radius-xl);
+      padding-inline:  var(--nova-space-lg);
+    }
+
+    // ── Цветовые варианты ──────────────────────────────────
+    @each $c in 'primary', 'success', 'danger', 'warning', 'info' {
+      &-#{$c} &-link {
+        &.active {
+          background: linear-gradient(
+            135deg,
+            var(--nova-#{$c})      0%,
+            var(--nova-#{$c}-dark) 100%
+          );
+          border-color: var(--nova-#{$c}-dark);
+          box-shadow:   0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:hover:not(.disabled):not(.active) {
+          border-color: var(--nova-#{$c});
+          color:        var(--nova-#{$c});
+          background:   var(--nova-#{$c}-50);
+        }
+      }
+    }
+
+    // ── Стилевые варианты ──────────────────────────────────
+
+    // Outline (активная без заливки):
+    &-outline &-link {
+      background:  transparent;
+      border-width:2px;
+
+      &.active {
+        background:   transparent;
+        border-color: var(--nova-primary);
+        color:        var(--nova-primary);
+        font-weight:  var(--nova-font-weight-bold);
+        box-shadow:   none;
+      }
+    }
+
+    // Flat (без рамок):
+    &-flat &-link {
+      border:        none;
+      border-radius: var(--nova-radius-md);
+      background:    transparent;
+
+      &:hover:not(.disabled):not(.active) {
+        background: var(--nova-bg-tertiary);
+        transform:  none;
+        box-shadow: none;
+      }
+
+      &.active {
+        background: var(--nova-primary);
+        box-shadow: none;
+      }
+    }
+
+    // Rounded (пилюли):
+    &-rounded &-link {
+      border-radius: var(--nova-radius-full);
+      min-inline-size: 44px;
+    }
+
+    // Minimal (только цифры):
+    &-minimal {
+      gap: var(--nova-space-xs);
+
+      .pagination-link {
+        border:     none;
+        background: transparent;
+        color:      var(--nova-text-tertiary);
+        min-inline-size: 32px;
+        block-size:      32px;
+
+        &:hover:not(.disabled):not(.active) {
+          background: var(--nova-bg-tertiary);
+          color:      var(--nova-text-primary);
+          transform:  none;
+          box-shadow: none;
+        }
+
+        &.active {
+          background: transparent;
+          color:      var(--nova-primary);
+          font-weight:var(--nova-font-weight-bold);
+          font-size:  var(--nova-font-size-lg);
+          box-shadow: none;
+        }
+      }
+    }
+
+    // ── Выравнивание ───────────────────────────────────────
+    &-center { justify-content: center; }
+    &-end    { justify-content: flex-end; }
+    &-start  { justify-content: flex-start; }
+
+    // ── Jump to page ───────────────────────────────────────
+    &-jump {
+      display:     flex;
+      align-items: center;
+      gap:         var(--nova-space-sm);
+      font-size:   var(--nova-font-size-sm);
+      color:       var(--nova-text-secondary);
+
+      input {
+        inline-size:   56px;
+        block-size:    40px;
+        text-align:    center;
+        border:        1px solid var(--nova-border-color);
+        border-radius: var(--nova-radius-md);
+        font-size:     var(--nova-font-size-sm);
+        color:         var(--nova-text-primary);
+        background:    var(--nova-bg-primary);
+        padding:       0;
+        outline:       none;
+        font-variant-numeric: tabular-nums;
+
+        &:focus {
+          border-color: var(--nova-primary);
+          box-shadow:   0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        // Убираем стрелки number input:
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button { appearance: none; }
+        -moz-appearance: textfield;
+      }
+    }
+
+    // ── Per page selector ──────────────────────────────────
+    &-per-page {
+      display:     flex;
+      align-items: center;
+      gap:         var(--nova-space-sm);
+      font-size:   var(--nova-font-size-sm);
+      color:       var(--nova-text-secondary);
+
+      select {
+        block-size:    40px;
+        padding-inline:var(--nova-space-md);
+        padding-inline-end: var(--nova-space-xl);
+        border:        1px solid var(--nova-border-color);
+        border-radius: var(--nova-radius-md);
+        font-size:     var(--nova-font-size-sm);
+        color:         var(--nova-text-primary);
+        background:    var(--nova-bg-primary);
+        cursor:        pointer;
+        appearance:    none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat:   no-repeat;
+        background-position: right var(--nova-space-sm) center;
+        background-size:     1.2em;
+        outline: none;
+
+        &:focus {
+          border-color: var(--nova-primary);
+          box-shadow:   0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+      }
+    }
+
+    // ── Load More кнопка ───────────────────────────────────
+    &-load-more {
+      display:     flex;
+      justify-content: center;
+      margin-block-start: var(--nova-space-xl);
+
+      .btn {
+        min-inline-size: 200px;
+        position:        relative;
+
+        &.loading {
+          color:          transparent;
+          pointer-events: none;
+
+          &::after {
+            content:       '';
+            position:      absolute;
+            inset-block-start: 50%;
+            inset-inline-start: 50%;
+            inline-size:   18px;
+            block-size:    18px;
+            margin-block-start:  -9px;
+            margin-inline-start: -9px;
+            border:        2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-block-start-color: white;
+            animation:     nova-spin 0.6s linear infinite;
+          }
+        }
+      }
+    }
+
+    // ── Адаптив ────────────────────────────────────────────
+    @media (max-width: 576px) {
+      gap: 2px;
+
+      &-link {
+        min-inline-size: 36px;
+        block-size:      36px;
+        font-size:       var(--nova-font-size-xs);
+        border-radius:   var(--nova-radius-md);
+      }
+
+      // Скрываем средние страницы:
+      &-item:not(.pagination-prev):not(.pagination-next):not(.pagination-first):not(.pagination-last):not(.active):not(.pagination-ellipsis) {
+        display: none;
+      }
+
+      &-prev .pagination-link,
+      &-next .pagination-link {
+        padding-inline: var(--nova-space-sm);
+      }
+
+      // Убираем текст из prev/next:
+      &-prev .pagination-link::before,
+      &-next .pagination-link::after {
+        font-size: 1.2em;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .pagination-link {
+    transition: none;
+    &:hover { transform: none; }
+  }
+}

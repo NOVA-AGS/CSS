@@ -1,0 +1,344 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ИКОНКИ
+// Исправлено: убраны раздутые spacing классы (дублировали utilities),
+// логические свойства, новое: анимации состояний,
+// icon button интеграция, stack иконки
+// ═══════════════════════════════════════════════════════════════
+
+// ── Конфигурация (SCSS переменные — не генерируют CSS) ─────────
+$nova-icon-sizes: (
+  'xs':  12px,
+  'sm':  16px,
+  'md':  20px,
+  'lg':  24px,
+  'xl':  32px,
+  '2xl': 48px,
+  '3xl': 64px,
+) !default;
+
+$nova-icon-colors: (
+  'primary':   var(--nova-primary),
+  'secondary': var(--nova-secondary),
+  'success':   var(--nova-success),
+  'danger':    var(--nova-danger),
+  'warning':   var(--nova-warning),
+  'info':      var(--nova-info),
+  'muted':     var(--nova-text-tertiary),
+  'subtle':    var(--nova-text-secondary),
+  'white':     #ffffff,
+  'current':   currentColor,
+) !default;
+
+$nova-icon-strokes: (
+  'thin':   1,
+  'normal': 1.5,
+  'bold':   2,
+  'heavy':  2.5,
+) !default;
+
+// ── Базовый миксин ─────────────────────────────────────────────
+@mixin nova-icon-base {
+  display:          inline-block;
+  vertical-align:   middle;
+  fill:             none;
+  stroke:           currentColor;
+  stroke-width:     1.5;
+  stroke-linecap:   round;
+  stroke-linejoin:  round;
+  transition:
+    color     var(--nova-transition-fast),
+    transform var(--nova-transition-fast),
+    opacity   var(--nova-transition-fast);
+  flex-shrink:      0;
+  pointer-events:   none;
+  // Чёткость на ретина дисплеях:
+  shape-rendering:  geometricPrecision;
+}
+
+// ── Миксин hover эффекта ───────────────────────────────────────
+@mixin nova-icon-hover($scale: 1.1, $color: null) {
+  transition:
+    transform var(--nova-transition-fast),
+    color     var(--nova-transition-fast);
+
+  &:hover {
+    transform: scale($scale);
+    @if $color { color: $color; stroke: $color; }
+  }
+}
+
+.nova {
+  // ── Базовый класс иконки ────────────────────────────────────
+  .nova-icon {
+    @include nova-icon-base;
+    // Дефолтный размер md:
+    inline-size: map-get($nova-icon-sizes, 'md');
+    block-size:  map-get($nova-icon-sizes, 'md');
+
+    // ── Размеры ────────────────────────────────────────────
+    @each $name, $size in $nova-icon-sizes {
+      &-#{$name} {
+        inline-size: $size;
+        block-size:  $size;
+      }
+    }
+
+    // ── Цвета ──────────────────────────────────────────────
+    @each $name, $value in $nova-icon-colors {
+      &-#{$name} {
+        color:  $value;
+        stroke: $value;
+      }
+    }
+
+    // Дополнительные семантические цвета:
+    &-text    { color: var(--nova-text-primary);   stroke: var(--nova-text-primary); }
+    &-inherit { color: inherit;                    stroke: inherit; }
+
+    // ── Толщина обводки ────────────────────────────────────
+    @each $name, $width in $nova-icon-strokes {
+      &-stroke-#{$name} { stroke-width: $width; }
+    }
+
+    // ── Filled вариант (заливка) ───────────────────────────
+    &-filled {
+      fill:         currentColor;
+      stroke:       none;
+    }
+
+    &-filled-stroke {
+      fill:         currentColor;
+      stroke:       currentColor;
+      stroke-width: 0.5;
+    }
+
+    // ── Состояния ──────────────────────────────────────────
+    &-disabled {
+      opacity:        0.4;
+      cursor:         not-allowed;
+      pointer-events: none;
+    }
+
+    &-active {
+      color:     var(--nova-primary);
+      stroke:    var(--nova-primary);
+      transform: scale(0.95);
+    }
+
+    &-loading {
+      animation:      nova-icon-spin 1s linear infinite;
+      pointer-events: none;
+    }
+
+    // ── Hover эффекты ──────────────────────────────────────
+    &-hover-scale   { @include nova-icon-hover(1.15); }
+    &-hover-rotate  { &:hover { transform: rotate(90deg); } }
+    &-hover-bounce  { &:hover { animation: nova-icon-bounce 0.4s ease; } }
+    &-hover-shake   { &:hover { animation: nova-icon-shake 0.4s ease; } }
+    &-hover-primary { @include nova-icon-hover(1.1, var(--nova-primary)); }
+    &-hover-success { @include nova-icon-hover(1.1, var(--nova-success)); }
+    &-hover-danger  { @include nova-icon-hover(1.1, var(--nova-danger)); }
+
+    // ── Анимации ───────────────────────────────────────────
+    &-spin   { animation: nova-icon-spin    1s linear infinite; }
+    &-pulse  { animation: nova-icon-pulse   2s ease-in-out infinite; }
+    &-bounce { animation: nova-icon-bounce  1s ease infinite; }
+    &-ping   { animation: nova-icon-ping    1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
+    &-fade   { animation: nova-icon-fade-in 0.3s ease-out; }
+
+    // ── С фоном ────────────────────────────────────────────
+    &-bg {
+      display:         inline-flex;
+      align-items:     center;
+      justify-content: center;
+      border-radius:   var(--nova-radius-lg);
+      padding:         var(--nova-space-sm);
+      background:      var(--nova-bg-tertiary);
+      color:           var(--nova-text-secondary);
+      transition:
+        background-color var(--nova-transition-fast),
+        color            var(--nova-transition-fast),
+        box-shadow       var(--nova-transition-fast);
+
+      // Размеры контейнера:
+      &-xs { padding: 4px;                       border-radius: var(--nova-radius-sm); }
+      &-sm { padding: var(--nova-space-xs);       border-radius: var(--nova-radius-md); }
+      &-lg { padding: var(--nova-space-md);       border-radius: var(--nova-radius-xl); }
+      &-xl { padding: var(--nova-space-lg);       border-radius: var(--nova-radius-2xl); }
+
+      // Формы:
+      &-circle  { border-radius: var(--nova-radius-full); }
+      &-square  { border-radius: var(--nova-radius-none); }
+      &-rounded { border-radius: var(--nova-radius-md); }
+
+      // Цветные фоны:
+      @each $name, $value in $nova-icon-colors {
+        @if $name != 'white' and $name != 'current' and $name != 'inherit' {
+          &-#{$name} {
+            background: var(--nova-#{$name});
+            color:      white;
+            stroke:     white;
+
+            .nova-icon { color: white; stroke: white; }
+          }
+
+          &-#{$name}-light {
+            background: var(--nova-#{$name}-50);
+            color:      var(--nova-#{$name});
+            stroke:     var(--nova-#{$name});
+
+            .nova-icon { color: var(--nova-#{$name}); stroke: var(--nova-#{$name}); }
+          }
+
+          &-#{$name}-soft {
+            background: var(--nova-#{$name}-100);
+            color:      var(--nova-#{$name}-dark);
+
+            .nova-icon { color: var(--nova-#{$name}-dark); stroke: var(--nova-#{$name}-dark); }
+          }
+        }
+      }
+
+      // С тенью:
+      &-shadow { box-shadow: var(--nova-shadow-md); }
+      &-glow   { box-shadow: var(--nova-glow-sm); }
+    }
+
+    // ── С рамкой ───────────────────────────────────────────
+    &-border {
+      display:         inline-flex;
+      align-items:     center;
+      justify-content: center;
+      border:          1.5px solid var(--nova-border-color);
+      border-radius:   var(--nova-radius-lg);
+      padding:         var(--nova-space-sm);
+      transition:
+        border-color var(--nova-transition-fast),
+        color        var(--nova-transition-fast);
+
+      &-circle  { border-radius: var(--nova-radius-full); }
+
+      @each $name, $value in $nova-icon-colors {
+        @if $name != 'white' and $name != 'current' and $name != 'inherit' {
+          &-#{$name} {
+            border-color: var(--nova-#{$name});
+            color:        var(--nova-#{$name});
+            .nova-icon    { color: var(--nova-#{$name}); stroke: var(--nova-#{$name}); }
+          }
+        }
+      }
+    }
+
+    // ── Адаптивный размер ──────────────────────────────────
+    &-responsive {
+      inline-size: map-get($nova-icon-sizes, 'sm');
+      block-size:  map-get($nova-icon-sizes, 'sm');
+
+      @media (min-width: 768px) {
+        inline-size: map-get($nova-icon-sizes, 'md');
+        block-size:  map-get($nova-icon-sizes, 'md');
+      }
+
+      @media (min-width: 1024px) {
+        inline-size: map-get($nova-icon-sizes, 'lg');
+        block-size:  map-get($nova-icon-sizes, 'lg');
+      }
+    }
+  }
+
+  // ── Stack (наложенные иконки) ─────────────────────────────
+  .nova-icon-stack {
+    position:    relative;
+    display:     inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    .nova-icon-stack-base {
+      inline-size: 100%;
+      block-size:  100%;
+    }
+
+    .nova-icon-stack-top {
+      position:  absolute;
+      inset:     0;
+      margin:    auto;
+      // Меньше базовой:
+      transform: scale(0.5);
+    }
+  }
+
+  // ── Icon List (иконка + текст) ────────────────────────────
+  .nova-icon-list {
+    list-style: none;
+    padding:    0;
+    margin:     0;
+
+    &-item {
+      display:     flex;
+      align-items: flex-start;
+      gap:         var(--nova-space-sm);
+      padding-block: var(--nova-space-xs);
+
+      .nova-icon {
+        margin-block-start: 2px;
+        flex-shrink:        0;
+      }
+    }
+  }
+
+  // ── Icon + Text inline ────────────────────────────────────
+  .nova-icon-text {
+    display:     inline-flex;
+    align-items: center;
+    gap:         var(--nova-space-xs);
+    line-height: 1;
+  }
+}
+
+// ── Анимации ───────────────────────────────────────────────────
+@keyframes nova-icon-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes nova-icon-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.9); }
+}
+
+@keyframes nova-icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  25%       { transform: translateY(-4px); }
+  75%       { transform: translateY(-2px); }
+}
+
+@keyframes nova-icon-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-3px) rotate(-3deg); }
+  40%       { transform: translateX(3px)  rotate(3deg); }
+  60%       { transform: translateX(-2px) rotate(-2deg); }
+  80%       { transform: translateX(2px)  rotate(2deg); }
+}
+
+@keyframes nova-icon-ping {
+  75%, 100% {
+    transform: scale(1.5);
+    opacity:   0;
+  }
+}
+
+@keyframes nova-icon-fade-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova .nova-icon {
+    &-spin, &-pulse, &-bounce, &-ping,
+    &-loading, &-hover-bounce, &-hover-shake { animation: none; }
+    &-hover-scale:hover,
+    &-hover-rotate:hover,
+    &-hover-primary:hover,
+    &-hover-success:hover,
+    &-hover-danger:hover  { transform: none; }
+  }
+}
