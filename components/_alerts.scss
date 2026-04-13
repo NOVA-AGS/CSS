@@ -1,1 +1,269 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — АЛЕРТЫ
+// Исправлено: логические свойства, переменные вместо хардкода,
+// новое: closable анимация, icon-only вариант, inline вариант
+// ═══════════════════════════════════════════════════════════════
 
+.nova {
+  .alert {
+    display:         flex;
+    align-items:     flex-start;
+    gap:             var(--nova-space-md);
+    padding-block:   var(--nova-space-lg);
+    padding-inline:  var(--nova-space-xl);
+    margin-block-end:var(--nova-space-lg);
+    border:          1px solid transparent;
+    border-radius:   var(--nova-radius-lg);
+    position:        relative;
+    animation:       alert-slide-in var(--nova-transition-slow)
+                     var(--nova-easing-decelerate) both;
+
+    &:last-child { margin-block-end: 0; }
+
+    // ── Внутренние элементы ──────────────────────────────────
+    &-icon {
+      flex-shrink: 0;
+      inline-size: 22px;
+      block-size:  22px;
+      display:     flex;
+      align-items: center;
+      justify-content: center;
+      margin-block-start: 1px; // выравнивание с текстом
+
+      svg {
+        inline-size: 100%;
+        block-size:  100%;
+      }
+    }
+
+    &-content { flex: 1; min-inline-size: 0; }
+
+    &-title {
+      font-weight:      var(--nova-font-weight-semibold);
+      font-size:        var(--nova-font-size-sm);
+      margin-block-end: var(--nova-space-xs);
+      line-height:      var(--nova-line-height-tight);
+    }
+
+    &-message {
+      margin:      0;
+      font-size:   var(--nova-font-size-sm);
+      line-height: var(--nova-line-height-normal);
+      opacity:     0.9;
+    }
+
+    &-close {
+      flex-shrink:     0;
+      background:      transparent;
+      border:          none;
+      cursor:          pointer;
+      padding:         var(--nova-space-xs);
+      inline-size:     28px;
+      block-size:      28px;
+      display:         flex;
+      align-items:     center;
+      justify-content: center;
+      border-radius:   var(--nova-radius-md);
+      font-size:       var(--nova-font-size-lg);
+      opacity:         0.6;
+      transition:
+        opacity          var(--nova-transition-fast),
+        background-color var(--nova-transition-fast);
+      margin-block-start: -2px;
+      margin-inline-end:  -4px;
+      line-height: 1;
+
+      &:hover {
+        opacity:          1;
+        background-color: rgba(0, 0, 0, 0.08);
+      }
+
+      &:focus-visible {
+        outline:        2px solid currentColor;
+        outline-offset: 2px;
+        opacity:        1;
+      }
+    }
+
+    // ── Цветовые варианты ────────────────────────────────────
+    $alert-colors: (
+      'primary': (
+        bg:     var(--nova-primary-50),
+        border: var(--nova-primary-200),
+        color:  var(--nova-primary-900),
+        icon:   var(--nova-primary),
+      ),
+      'success': (
+        bg:     var(--nova-success-50),
+        border: var(--nova-success-200),
+        color:  var(--nova-success-900),
+        icon:   var(--nova-success),
+      ),
+      'warning': (
+        bg:     var(--nova-warning-50),
+        border: var(--nova-warning-200),
+        color:  var(--nova-warning-800),
+        icon:   var(--nova-warning),
+      ),
+      'danger': (
+        bg:     var(--nova-danger-50),
+        border: var(--nova-danger-200),
+        color:  var(--nova-danger-900),
+        icon:   var(--nova-danger),
+      ),
+      'info': (
+        bg:     var(--nova-info-50),
+        border: var(--nova-info-200),
+        color:  var(--nova-info-900),
+        icon:   var(--nova-info),
+      ),
+    );
+
+    @each $color, $props in $alert-colors {
+      // Мягкий вариант (по умолчанию):
+      &-#{$color} {
+        background-color: map-get($props, bg);
+        border-color:     map-get($props, border);
+        color:            map-get($props, color);
+
+        .alert-icon { color: map-get($props, icon); }
+        .alert-close { color: map-get($props, icon); }
+      }
+
+      // Сплошной вариант:
+      &-solid-#{$color} {
+        background-color: var(--nova-#{$color});
+        border-color:     var(--nova-#{$color}-dark);
+        color:            white;
+
+        .alert-close:hover {
+          background-color: rgba(255, 255, 255, 0.15);
+        }
+      }
+
+      // С левой границей:
+      &-bordered-#{$color} {
+        border-color:              transparent;
+        border-inline-start-color: var(--nova-#{$color});
+        border-inline-start-width: 4px;
+        background-color:          var(--nova-bg-primary);
+        color:                     var(--nova-text-primary);
+        border-radius:             0 var(--nova-radius-lg)
+                                   var(--nova-radius-lg) 0;
+
+        .alert-icon  { color: var(--nova-#{$color}); }
+        .alert-title { color: var(--nova-#{$color}); }
+        .alert-close { color: var(--nova-#{$color}); }
+      }
+
+      // Outline вариант:
+      &-outline-#{$color} {
+        background-color: transparent;
+        border-color:     var(--nova-#{$color});
+        color:            var(--nova-#{$color});
+
+        .alert-message { opacity: 0.85; }
+      }
+    }
+
+    // ── Размеры ──────────────────────────────────────────────
+    &-sm {
+      padding-block:  var(--nova-space-sm);
+      padding-inline: var(--nova-space-md);
+      font-size:      var(--nova-font-size-sm);
+      gap:            var(--nova-space-sm);
+      border-radius:  var(--nova-radius-md);
+
+      .alert-icon {
+        inline-size: 18px;
+        block-size:  18px;
+      }
+    }
+
+    &-lg {
+      padding-block:  var(--nova-space-xl);
+      padding-inline: var(--nova-space-2xl);
+      font-size:      var(--nova-font-size-base);
+      gap:            var(--nova-space-lg);
+      border-radius:  var(--nova-radius-xl);
+
+      .alert-icon {
+        inline-size: 28px;
+        block-size:  28px;
+      }
+    }
+
+    // ── Inline вариант (для форм) ─────────────────────────────
+    &-inline {
+      display:        inline-flex;
+      margin-block-end: 0;
+      padding-block:  var(--nova-space-xs);
+      padding-inline: var(--nova-space-sm);
+      font-size:      var(--nova-font-size-sm);
+      border-radius:  var(--nova-radius-md);
+    }
+
+    // ── Баннерный (во всю ширину, без скруглений) ─────────────
+    &-banner {
+      border-radius: 0;
+      margin-block-end: 0;
+      justify-content: center;
+      text-align: center;
+    }
+
+    // ── Toast-подобный (с тенью) ──────────────────────────────
+    &-floating {
+      box-shadow:    var(--nova-shadow-lg);
+      border-radius: var(--nova-radius-xl);
+    }
+
+    // ── Состояние закрытия ────────────────────────────────────
+    &.alert-dismissing {
+      animation: alert-slide-out var(--nova-transition-slow)
+                 var(--nova-easing-accelerate) forwards;
+      pointer-events: none;
+    }
+
+    // ── Без иконки (compact) ──────────────────────────────────
+    &-no-icon {
+      .alert-icon { display: none; }
+    }
+  }
+}
+
+// ── Анимации ───────────────────────────────────────────────────
+@keyframes alert-slide-in {
+  from {
+    transform: translateY(-12px);
+    opacity:   0;
+  }
+  to {
+    transform: translateY(0);
+    opacity:   1;
+  }
+}
+
+@keyframes alert-slide-out {
+  from {
+    transform:   translateY(0);
+    opacity:     1;
+    max-height:  200px;
+    margin-block-end: var(--nova-space-lg);
+    padding-block: var(--nova-space-lg);
+  }
+  to {
+    transform:   translateY(-12px);
+    opacity:     0;
+    max-height:  0;
+    margin-block-end: 0;
+    padding-block: 0;
+  }
+}
+
+// Учитываем prefers-reduced-motion:
+@media (prefers-reduced-motion: reduce) {
+  .nova .alert {
+    animation: none;
+    &.alert-dismissing { display: none; }
+  }
+}
