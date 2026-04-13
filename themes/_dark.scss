@@ -1,1 +1,441 @@
+// ═══════════════════════════════════════════════════════════════
+// NOVA SCSS 2.0 — ТЁМНАЯ ТЕМА
+// Исправлено: убраны хардкодные цвета, используем переменные,
+// алерты через переменные вместо rgba($hex, 0.15),
+// логические свойства, новые компоненты
+// ═══════════════════════════════════════════════════════════════
 
+[data-nova-theme="dark"] {
+  color-scheme: dark;
+
+  // ── Семантические переменные темы ──────────────────────
+  --nova-bg-primary:    #0f172a;
+  --nova-bg-secondary:  #1e293b;
+  --nova-bg-tertiary:   #334155;
+  --nova-text-primary:  #f1f5f9;
+  --nova-text-secondary:#cbd5e1;
+  --nova-text-tertiary: #94a3b8;
+  --nova-border-color:  #1e293b;
+
+  // ── Body ───────────────────────────────────────────────
+  body {
+    background: linear-gradient(135deg, #0f172a 0%, #1a1f35 100%);
+    color:      var(--nova-text-primary);
+  }
+
+  // ── Навигация ──────────────────────────────────────────
+  .nova .navbar {
+    background-color:      #1a1f35;
+    border-block-end-color:#1e293b;
+    box-shadow:            0 4px 20px rgba(0, 0, 0, 0.3);
+
+    &-link { color: var(--nova-text-secondary); }
+
+    &-link:hover {
+      color:            var(--nova-primary-light);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    &-link.active {
+      background-color: rgba(99, 102, 241, 0.15);
+      color:            var(--nova-primary-light);
+    }
+
+    &-toggler span  { background-color: var(--nova-text-secondary); }
+    &-search input  { background-color: var(--nova-bg-secondary); border-color: var(--nova-bg-tertiary); }
+  }
+
+  .nova .sidenav {
+    background-color:         #1a1f35;
+    border-inline-end-color:  var(--nova-bg-tertiary);
+  }
+
+  // ── Карточки ───────────────────────────────────────────
+  .nova .card {
+    background: linear-gradient(135deg, #1e293b 0%, #1a2332 100%);
+    border-color: #334155;
+    box-shadow:   0 8px 32px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    &-header {
+      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      border-block-end-color: #334155;
+    }
+
+    &-footer {
+      background-color:        #1a2332;
+      border-block-start-color:#334155;
+    }
+  }
+
+  // ── Формы ──────────────────────────────────────────────
+  .nova .form-control {
+    background-color: #1e293b;
+    color:            var(--nova-text-primary);
+    border-color:     #334155;
+
+    &:focus {
+      background-color: #1a2332;
+      border-color:     var(--nova-primary-light);
+      box-shadow:       0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    &:hover:not(:focus):not(:disabled) {
+      border-color: #475569;
+    }
+
+    &::placeholder { color: #64748b; }
+    &:disabled     { background-color: #1a2332; opacity: 0.5; }
+  }
+
+  .nova select.form-control {
+    background-color:   #1e293b;
+    background-image:   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  }
+
+  .nova .form-switch input[type="checkbox"] {
+    background-color: #475569;
+    &:checked        { background-color: var(--nova-primary); }
+  }
+
+  .nova .input-group-text {
+    background-color: #334155;
+    border-color:     #334155;
+    color:            var(--nova-text-tertiary);
+  }
+
+  .nova .form-file-label {
+    background-color: #1e293b;
+    border-color:     #334155;
+    color:            var(--nova-text-tertiary);
+  }
+
+  .nova .form-check-card {
+    border-color: #334155;
+    &:has(input:checked) { background-color: rgba(99, 102, 241, 0.1); }
+  }
+
+  // ── Кнопки ─────────────────────────────────────────────
+  .nova .btn-ghost {
+    color: var(--nova-text-secondary);
+    &:hover { background-color: #334155; color: var(--nova-primary-light); }
+  }
+
+  .nova .btn-outline-primary {
+    color:        var(--nova-primary-light);
+    border-color: var(--nova-primary-light);
+    &:hover      { background-color: rgba(99, 102, 241, 0.1); }
+  }
+
+  // ── Модалы ─────────────────────────────────────────────
+  .nova .modal {
+    &-dialog {
+      background: linear-gradient(135deg, #1e293b 0%, #1a2332 100%);
+      border-color: #334155;
+      box-shadow:   0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    &-header {
+      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      border-block-end-color: #334155;
+    }
+
+    &-footer {
+      background-color:        #1a2332;
+      border-block-start-color:#334155;
+    }
+
+    &-backdrop { background-color: rgba(0, 0, 0, 0.7); }
+  }
+
+  // ── Таблицы ────────────────────────────────────────────
+  .nova .table {
+    background-color: #1e293b;
+    color:            var(--nova-text-primary);
+
+    thead {
+      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      th {
+        border-block-end-color: #334155;
+        color:                  var(--nova-text-tertiary);
+      }
+    }
+
+    tbody tr {
+      border-block-end-color: #334155;
+      &:hover { background-color: #334155; }
+    }
+
+    tfoot {
+      background-color:          #1a2332;
+      border-block-start-color:  #334155;
+    }
+  }
+
+  .nova .table-wrap {
+    border-color: #334155;
+    box-shadow:   0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  // ── Алерты ─────────────────────────────────────────────
+  // ✅ ИСПРАВЛЕНО: переменные вместо хардкода
+  .nova .alert {
+    background-color: #1e293b;
+    border-color:     #334155;
+    color:            var(--nova-text-primary);
+  }
+
+  $dark-alerts: (
+    'primary': (rgba(99,  102, 241, 0.12), var(--nova-primary),       var(--nova-primary-300)),
+    'success': (rgba(16,  185, 129, 0.12), var(--nova-success),       var(--nova-success-300)),
+    'danger':  (rgba(239, 68,  68,  0.12), var(--nova-danger),        var(--nova-danger-300)),
+    'warning': (rgba(245, 158, 11,  0.12), var(--nova-warning),       var(--nova-warning-200)),
+    'info':    (rgba(59,  130, 246, 0.12), var(--nova-info),          var(--nova-info-300)),
+  );
+
+  @each $c, $props in $dark-alerts {
+    .nova .alert-#{$c} {
+      background-color: nth($props, 1);
+      border-color:     nth($props, 2);
+      color:            nth($props, 3);
+
+      .alert-icon  { color: nth($props, 2); }
+      .alert-close { color: nth($props, 2); }
+    }
+
+    .nova .alert-solid-#{$c} {
+      background: linear-gradient(
+        135deg,
+        var(--nova-#{$c})      0%,
+        var(--nova-#{$c}-dark) 100%
+      );
+      color:       white;
+      border-color:var(--nova-#{$c}-dark);
+    }
+
+    .nova .alert-bordered-#{$c} {
+      border-color:              transparent;
+      border-inline-start-color: var(--nova-#{$c});
+      background-color:          rgba(nth($props, 1), 0.5);
+      color:                     var(--nova-text-primary);
+    }
+  }
+
+  // ── Бейджи ─────────────────────────────────────────────
+  .nova .badge {
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.25);
+  }
+
+  .nova .badge-neutral {
+    background-color: #334155;
+    color:            var(--nova-text-secondary);
+    border-color:     #475569;
+  }
+
+  // ── Тосты ──────────────────────────────────────────────
+  .nova .toast {
+    background: linear-gradient(135deg, #1e293b 0%, #1a2332 100%);
+    border-color:#334155;
+    box-shadow:  0 8px 40px rgba(0, 0, 0, 0.4);
+
+    &-title   { color: var(--nova-text-primary); }
+    &-message { color: var(--nova-text-secondary); }
+    &-close   { color: var(--nova-text-tertiary);
+      &:hover { color: var(--nova-text-primary); }
+    }
+  }
+
+  // ── Вкладки ────────────────────────────────────────────
+  .nova .tabs-header     { border-block-end-color: #334155; }
+  .nova .tabs-card       {
+    background-color: #1e293b;
+    border-color:     #334155;
+
+    .tabs-header {
+      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      border-block-end-color: #334155;
+    }
+  }
+
+  .nova .tabs-pill .tabs-header { background-color: #1a2332; }
+
+  .nova .tab-link {
+    color: var(--nova-text-tertiary);
+    &:hover { background-color: rgba(255, 255, 255, 0.05); color: var(--nova-text-secondary); }
+  }
+
+  // ── Пагинация ──────────────────────────────────────────
+  .nova .pagination-link {
+    background-color: #1e293b;
+    border-color:     #334155;
+    color:            var(--nova-text-primary);
+
+    &:hover:not(.disabled):not(.active) {
+      background-color: #334155;
+      border-color:     var(--nova-primary-light);
+      color:            var(--nova-primary-light);
+    }
+
+    &.disabled { background-color: #1a2332; }
+  }
+
+  // ── Дропдаун ───────────────────────────────────────────
+  .nova .dropdown-menu {
+    background-color: #1e293b;
+    border-color:     #334155;
+    box-shadow:       0 8px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .nova .dropdown-item {
+    color: var(--nova-text-primary);
+    &:hover { background-color: #334155; color: var(--nova-primary-light); }
+    &.active { background-color: rgba(99, 102, 241, 0.15); color: var(--nova-primary-light); }
+  }
+
+  .nova .dropdown-header  { color: var(--nova-text-tertiary); }
+  .nova .dropdown-divider { border-block-start-color: #334155; }
+
+  // ── Collapse ───────────────────────────────────────────
+  .nova .collapse-group {
+    background-color: #1e293b;
+    border-color:     #334155;
+  }
+
+  .nova .collapse-item { border-block-end-color: #334155; }
+
+  .nova .collapse-header {
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    color:      var(--nova-text-primary);
+
+    &:hover    { background-color: #334155; }
+    &.active   {
+      background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.2) 0%,
+        rgba(99, 102, 241, 0.1) 100%
+      );
+      color: var(--nova-primary-light);
+    }
+  }
+
+  .nova .collapse-toggle { color: var(--nova-text-tertiary); }
+
+  // ── Navbar Dropdown ────────────────────────────────────
+  .nova .navbar-dropdown-menu {
+    background-color: #1e293b;
+    border-color:     #334155;
+  }
+
+  .nova .navbar-dropdown-item {
+    color: var(--nova-text-secondary);
+    &:hover { background-color: #334155; color: var(--nova-primary-light); }
+  }
+
+  // ── Breadcrumbs ────────────────────────────────────────
+  .nova .breadcrumb-item a { color: var(--nova-primary-light); }
+  .nova .breadcrumb-item.active { color: var(--nova-text-secondary); }
+  .nova .breadcrumb-item:not(:last-child)::after { color: var(--nova-text-tertiary); }
+
+  // ── Tooltip ────────────────────────────────────────────
+  .nova .tooltip {
+    background:     rgba(241, 245, 249, 0.92);
+    color:          var(--nova-gray-900);
+    backdrop-filter:blur(8px);
+
+    &-top::before    { border-block-start-color: rgba(241, 245, 249, 0.92); }
+    &-bottom::before { border-block-end-color:   rgba(241, 245, 249, 0.92); }
+    &-left::before   { border-inline-start-color:rgba(241, 245, 249, 0.92); }
+    &-right::before  { border-inline-end-color:  rgba(241, 245, 249, 0.92); }
+  }
+
+  // ── Код ────────────────────────────────────────────────
+  code {
+    background-color: #334155;
+    color:            var(--nova-danger-300);
+  }
+
+  pre {
+    background-color: #1a2332;
+    border-color:     #334155;
+  }
+
+  // ── Скроллбар ──────────────────────────────────────────
+  & ::-webkit-scrollbar-thumb {
+    background-color: #475569;
+    &:hover { background-color: #64748b; }
+  }
+  * {
+    scrollbar-color: #475569 transparent;
+  }
+
+  // ── Спиннеры ───────────────────────────────────────────
+  .nova .spinner-border {
+    border-color:            #334155;
+    border-block-start-color:var(--nova-primary-light);
+  }
+
+  .nova .spinner-skeleton {
+    background: linear-gradient(
+      90deg,
+      #1e293b 25%,
+      #334155 50%,
+      #1e293b 75%
+    );
+    background-size: 200% 100%;
+  }
+
+  // ── Иконки ─────────────────────────────────────────────
+  .nova .nova-icon-bg {
+    background-color: #334155;
+    color:            var(--nova-text-secondary);
+  }
+
+  // ── Carousel ───────────────────────────────────────────
+  .nova .carousel {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  // ── Range input ────────────────────────────────────────
+  .nova .form-range::-webkit-slider-track {
+    background: #334155;
+  }
+  .nova .form-range::-moz-range-track {
+    background: #334155;
+  }
+
+  // ── File input ─────────────────────────────────────────
+  .nova .form-file-label {
+    background-color: #1e293b;
+    border-color:     #475569;
+    color:            var(--nova-text-tertiary);
+
+    &:hover {
+      border-color:     var(--nova-primary-light);
+      background-color: rgba(99, 102, 241, 0.08);
+    }
+  }
+
+  // ── Floating label ─────────────────────────────────────
+  .nova .form-floating .form-label {
+    color: var(--nova-text-tertiary);
+  }
+  .nova .form-floating .form-control:focus ~ .form-label {
+    color: var(--nova-primary-light);
+  }
+
+  // ── Prose ──────────────────────────────────────────────
+  .nova .prose {
+    color: var(--nova-text-secondary);
+    blockquote { border-inline-start-color: var(--nova-primary-light); }
+  }
+
+  // ── KBD ────────────────────────────────────────────────
+  .nova .kbd {
+    background:   #334155;
+    border-color: #475569;
+    color:        var(--nova-text-primary);
+  }
+}
